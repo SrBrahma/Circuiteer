@@ -1,0 +1,110 @@
+#Commentaries must have '#' in the start of each line.
+#The designation of each chip MUST NOT be interrupted with commentaries between each information.
+#However, you can add commentaries between each chip.
+#
+#typedef struct
+#{
+#	char name[32];
+#	char description[128];
+#	unsigned short gate kind; /*see the gates index. eg: AND = 0, NOT = 6.*/
+#	unsigned short inputs;
+#	unsigned short outputs;
+#	unsigned short inputsPerOutput;
+#} ChipType;
+#
+#Gates kinds:
+#AND_INDEX						0
+#OR_INDEX						1
+#
+#NAND_INDEX						2
+#NOR_INDEX						3
+#
+#XOR_INDEX						4
+#XNOR_INDEX						5
+#
+#NOT_INDEX						6
+#
+
+7400 - Quad NAND 2 inputs
+These devices countains four independent 2-input-NAND. From TTL family.
+2
+8
+4
+2
+
+7402 - Quad NOR 2-inputs
+These devices countains four independent 2-input-NOR. From TTL family.
+3
+8
+4
+2
+
+7404 - Hex NOT/INVERTER
+These devices countains six independent NOT. From TTL family.
+6
+6
+6
+1
+
+7408 - Quad AND 2-inputs
+These devices countains four independent 2-input-AND. From TTL family.
+0
+8
+4
+2
+
+7410 - Triple NAND 3-inputs
+These devices countains tree independent 3-input-NAND. From TTL family.
+2
+9
+3
+3
+
+7411 - Triple AND 3-inputs
+These devices countains tree independent 3-input-AND. From TTL family.
+0
+9
+3
+3
+
+7420 - Dual NAND 4-inputs
+These devices countains two independent 4-input-NAND. From TTL family.
+2
+8
+2
+4
+
+7421 - Dual AND 4-inputs
+These devices countains two independent 4-input-AND. From TTL family.
+0
+8
+2
+4
+
+7427 - Triple NOR-3-inputs
+These devices countains tree independent 3-input-NOR. From TTL family.
+3
+9
+3
+3
+
+7430 - Single NAND 8-inputs
+These devices countains a single 8-input-NAND. From TTL family.
+2
+8
+1
+1
+
+7432 - Quad OR 2-inputs
+These devices countains four independent 2-input-OR. From TTL family.
+1
+8
+4
+2
+
+7486 - Quad XOR 2-inputs
+These devices countains four independent 2-input-XOR. From TTL family.
+4
+8
+4
+2
