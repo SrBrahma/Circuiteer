@@ -50,6 +50,9 @@ typedef struct
 	unsigned short inputsPerOutput;
 } ChipType; 
 
+unsigned
+readTextFileLine (FILE *pFile, char arrayToReturn[]);
+
 unsigned short
 LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES]);
 
