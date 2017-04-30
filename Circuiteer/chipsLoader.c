@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include "Circuiteer.h"
 
@@ -12,7 +11,7 @@
  * EX: "abc\0" will return 4 chars */
  
 unsigned
-readTextFileLine (FILE *pFile, char arrayToReturn[])
+ReadTextFileLine (FILE *pFile, char arrayToReturn[])
 {
 	arrayToReturn[0] = '0';
 	unsigned charCounter = 0;
@@ -27,6 +26,13 @@ readTextFileLine (FILE *pFile, char arrayToReturn[])
 	return charCounter;
 }
 
+void
+CopyString (char destinationArray[], char sourceArray[], unsigned sizeToCopy)
+{
+	unsigned counter;
+	for (counter = 0; counter < sizeToCopy; counter ++)
+		destinationArray[counter] = sourceArray[counter];
+}
 /* Will load the chips into the given array */
 unsigned short
 LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES])
@@ -49,8 +55,8 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
 	
 	while (feof (pFile) == 0)
 	{
-		charCounter = readTextFileLine (pFile, myString);
-		printf ("RAW: %s, control = %i\n", myString, controlString);
+		charCounter = ReadTextFileLine (pFile, myString);
+		/*printf ("RAW: %s, control = %i\n", myString, controlString);*/
 		if (controlString == 0) /* Check if the line is a commentary or empty line */
 		{
 
@@ -66,14 +72,12 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
 		
 		if (controlString == 1) /* Chip Name */
 		{
-			memcpy(auxChipVar.name, myString, charCounter);
-			printf ("READ: %s\n", myString);
-			
+			CopyString (auxChipVar.name, myString, charCounter);
 		}
 		
 		else if (controlString == 2) /* Chip Description */
 		{
-			memcpy(auxChipVar.description, myString, charCounter);
+			CopyString (auxChipVar.description, myString, charCounter);
 		}
 		
 		else if (controlString == 3) /* Chip kind */
@@ -94,24 +98,23 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
 		else if (controlString == 6) /* Chip ratio of inputs per output */
 		{
 			auxChipVar.inputsPerOutput = (unsigned short) strtoul (myString, &stringValidation, 10);
-			controlString = 0; /* Restart the counter/control */
-			break;
+			controlString = -1; /* Restart the counter/control */
+			printf ("Name: %s\n", auxChipVar.name);
+			printf ("Description: %s\n", auxChipVar.description);
+			printf ("Gate: %u\n", auxChipVar.gateKind);
+			printf ("Inputs: %u\n", auxChipVar.inputs);
+			printf ("Outputs: %u\n", auxChipVar.outputs);
+			printf ("InputsPerOutputs: %u\n\n", auxChipVar.inputsPerOutput);
 		}
-		
 		
 		if (controlString > 2 && *stringValidation != EOS)
 		{
+			printf ("Error at stringValidation =: (%c)\n", *stringValidation);
 			return ERROR_STR_TO_UL;
 		}
 		
 		controlString += 1;
 	} 									/* END OF WHILE LOOP */
-	
-	printf ("Name: %s\n", auxChipVar.name);
-	/*printf ("Description: %s\n", auxChipVar.description);
-	printf ("Gate: %u\n", auxChipVar.gateKind);
-	printf ("Inputs: %u\n", auxChipVar.inputs);
-	*/
 	fclose (pFile);
 	return 0;
 }

@@ -42,8 +42,8 @@
 
 typedef struct
 {
-	char name[16];
-	char description[64];
+	char name[MAX_CHIP_NAME_SIZE];
+	char description[MAX_CHIP_DESCRIPTION_SIZE];
 	unsigned short gateKind; /*see the gates index. eg: AND = 0, NOT = 6. */
 	unsigned short inputs;
 	unsigned short outputs;
