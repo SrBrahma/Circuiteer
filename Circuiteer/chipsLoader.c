@@ -93,12 +93,15 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
 		{
 			auxChipVar.inputsPerOutput = (unsigned short) strtoul (myString, &stringValidation, 10);
 			controlString = -1; /* Restart the counter/control */
+			/* DEBUG
 			printf ("Name: %s\n", auxChipVar.name);
 			printf ("Description: %s\n", auxChipVar.description);
 			printf ("Gate: %u\n", auxChipVar.gateKind);
 			printf ("Inputs: %u\n", auxChipVar.inputs);
 			printf ("Outputs: %u\n", auxChipVar.outputs);
 			printf ("InputsPerOutputs: %u\n\n", auxChipVar.inputsPerOutput);
+			*/
+			
 		}
 		
 		if (controlString > 2 && *stringValidation != EOS)

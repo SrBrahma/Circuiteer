@@ -5,7 +5,7 @@
 #include "Circuiteer.h"
 #include <string.h>
 
-#define EXPRESSION_DEFAULT_CHARS " ()'¬+"
+#define EXPRESSION_DEFAULT_CHARS " ()'¬+\0"
 
 unsigned short
 readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght)
@@ -15,11 +15,10 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 	unsigned short foundInvalidChar, invalidExpression;
 	unsigned short counter, counter2;
 	unsigned short stringLenght;
-
+	unsigned short foundOperandBefore, foundOperandAfter, foundOperator;
 	unsigned short lenExpressionDefaultChars = strlen (EXPRESSION_DEFAULT_CHARS);
 	char stringInput [maxEntryLenght];
-	
-	char validChars [lenExpressionDefaultChars + numberOfInputs + 1]; /* +1 for EOS */
+	char validChars [lenExpressionDefaultChars + numberOfInputs];
 	
 	/* Add the values of the macro expression default chars to the var validChars */
 	for (counter = 0; counter < lenExpressionDefaultChars; counter ++)
@@ -28,14 +27,14 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 	/* Add to the same var, the expression inputs letters */
 	for (; counter < lenExpressionDefaultChars + numberOfInputs; counter ++)
 		validChars [counter] = inputsNames [counter - lenExpressionDefaultChars];
-	
-	validChars [counter] = EOS;
-	
+
+	/* Main Loop to get the expression*/
 	do
 	{
-		numberOpenParenthesis = 0;
-		numberCloseParenthesis = 0;
+		numberOpenParenthesis = numberCloseParenthesis = 0;
+		foundOperandBefore = foundOperandAfter = 0;
 		invalidExpression = 0;
+		
 		printf ("%s", printfString);
 		scanf ("%s", stringInput);
 		stringLenght = strlen(stringInput);
@@ -51,38 +50,74 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 			}
 			if (foundInvalidChar == 1)
 			{
-				printf ("Invalid character found (%c) on position %u of the string.\n", stringInput[counter], counter);
+				printf ("\nInvalid character \"%c\" on position %u of the string.\n", stringInput[counter], counter);
 				invalidExpression = 1;
 			}
 		}
-		/* - - - */
-		/* Now look for invalid parenthesis */
+		
+		/* Now look for invalid parenthesis and invalid operators*/
 		for (counter = 0; (counter < stringLenght && invalidExpression == 0); counter ++)
 		{
-			if (stringInput[counter] == '(')
+				/* Look for operands */
+			for (counter2 = 0; counter2 < numberOfInputs; counter2 ++)
+			{
+				if (inputsNames[counter2] == stringInput[counter])
+				{
+					if (foundOperandBefore == 0)
+						foundOperandBefore = 1;
+					else if (foundOperandBefore == 1)
+						foundOperandAfter = 1;
+				}
+			}
+			
+				/* Look for operators */
+			if (stringInput[counter] == '+') /* Will add the * operator later */
+			{
+				if (foundOperandBefore == 0)
+				{
+					printf ("\nInvalid operator \"%c\" on position %u of the string.\n", stringInput[counter], counter);
+					invalidExpression = 1;
+				}
+				
+				else if (foundOperator == 1)
+				{
+					printf ("\nInvalid operator \"%c\" on position %u of the string.\n", stringInput[counter], counter);
+					invalidExpression = 1;
+				}
+				
+				else
+					foundOperator = 1;
+			}
+				/* Look for parenthesis */
+			else if (stringInput[counter] == '(')
+			{
 				numberOpenParenthesis ++;
+				foundOperandBefore = 0; /* To avoid stuff like A (+ B) */
+			}
 			else if (stringInput[counter] == ')')
 			{
+				foundOperandAfter = 0; /* To avoid stuff like A (B +) */
 				numberCloseParenthesis ++;
 				if (numberCloseParenthesis > numberOpenParenthesis)
 				{
-					printf ("Invalid parenthesis \')\' found on position %u of the string.\n", counter);
+					printf ("\nInvalid parenthesis \")\" on position %u of the string.\n", counter);
 					invalidExpression = 1;
 				}
 			}
 		}
 		if (numberOpenParenthesis != numberCloseParenthesis && invalidExpression == 0)
 		{
-			printf ("Unclosed parenthesis found.\n");
+			printf ("\nUnclosed parenthesis found.\n");
 			invalidExpression = 1;
 		}
-		/* - - - */
-		/* Next, deal with ' and + */
 	}
 	while (invalidExpression != 0);
+	/* End of Main Loop */
 	
 	return numberOfAgroupments;
-}
+} /* End of getExpression function */
+
+
 void
 CopyString (char destinationArray[], char sourceArray[], unsigned sizeToCopy)
 {
