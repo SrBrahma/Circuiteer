@@ -4,6 +4,44 @@
 #include <stdlib.h>
 #include "Circuiteer.h"
 
+#define EXPRESSION_DEFAULT_CHARS " ()'¬+"
+
+unsigned short
+readExpression (char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght)
+{
+	unsigned short numberOfAgroupments = 0;
+	unsigned short numberOpenParenthesis = 0, numberCloseParenthesis = 0;
+	unsigned short invalidExpression;
+	unsigned short counter;
+	unsigned short stringLenght;
+
+	unsigned short lenExpressionDefaultChars = strlen (EXPRESSION_DEFAULT_CHARS);
+	char stringInput [maxEntryLenght];
+	
+	char validChars [lenExpressionDefaultChars + numberOfInputs + 1]; /* +1 for EOS */
+	
+	/* Add the values of the macro expression default chars to the var validChars */
+	for (counter = 0; counter < lenExpressionDefaultChars); counter ++)
+		validChars [counter] = EXPRESSION_DEFAULT_CHARS [counter];
+	
+	/* Add to the same var, the expression inputs letters */
+	for (; counter < lenExpressionDefaultChars + numberOfInputs; counter ++)
+		validChars [counter] = inputNames [counter - lenExpressionDefaultChars];
+		
+	
+	do
+	{
+		scanf ("%s", stringInput);
+		/* First look for garbage */
+		for (counter = 0; counter < stringLenght; counter ++);
+		{
+		if stringInput[positionStr]
+	}
+	}
+	while (invalidExpression != 0);
+	
+	return numberOfAgroupments;
+}
 void
 CopyString (char destinationArray[], char sourceArray[], unsigned sizeToCopy)
 {
