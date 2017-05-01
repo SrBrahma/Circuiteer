@@ -69,5 +69,7 @@ scanfChar (char printfString[], unsigned short allowSpecialChars, unsigned maxEn
 unsigned short
 scanfUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsigned maxEntryLenght);
 
+unsigned short
+readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght);
 
 #endif

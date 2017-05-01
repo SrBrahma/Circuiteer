@@ -3,16 +3,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Circuiteer.h"
+#include <string.h>
 
 #define EXPRESSION_DEFAULT_CHARS " ()'¬+"
 
 unsigned short
-readExpression (char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght)
+readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght)
 {
 	unsigned short numberOfAgroupments = 0;
-	unsigned short numberOpenParenthesis = 0, numberCloseParenthesis = 0;
-	unsigned short invalidExpression;
-	unsigned short counter;
+	unsigned short numberOpenParenthesis, numberCloseParenthesis;
+	unsigned short foundInvalidChar, invalidExpression;
+	unsigned short counter, counter2;
 	unsigned short stringLenght;
 
 	unsigned short lenExpressionDefaultChars = strlen (EXPRESSION_DEFAULT_CHARS);
@@ -21,22 +22,62 @@ readExpression (char agroupmentsReturn[], char inputsNames[], unsigned short num
 	char validChars [lenExpressionDefaultChars + numberOfInputs + 1]; /* +1 for EOS */
 	
 	/* Add the values of the macro expression default chars to the var validChars */
-	for (counter = 0; counter < lenExpressionDefaultChars); counter ++)
+	for (counter = 0; counter < lenExpressionDefaultChars; counter ++)
 		validChars [counter] = EXPRESSION_DEFAULT_CHARS [counter];
 	
 	/* Add to the same var, the expression inputs letters */
 	for (; counter < lenExpressionDefaultChars + numberOfInputs; counter ++)
-		validChars [counter] = inputNames [counter - lenExpressionDefaultChars];
-		
+		validChars [counter] = inputsNames [counter - lenExpressionDefaultChars];
+	
+	validChars [counter] = EOS;
 	
 	do
 	{
+		numberOpenParenthesis = 0;
+		numberCloseParenthesis = 0;
+		invalidExpression = 0;
+		printf ("%s", printfString);
 		scanf ("%s", stringInput);
-		/* First look for garbage */
-		for (counter = 0; counter < stringLenght; counter ++);
+		stringLenght = strlen(stringInput);
+		
+		/* First look for garbage (chars that are not allowed) */
+		for (counter = 0; (counter < stringLenght && invalidExpression == 0); counter ++)
 		{
-		if stringInput[positionStr]
-	}
+			foundInvalidChar = 1;
+			for (counter2 = 0; (counter2 < lenExpressionDefaultChars + numberOfInputs && foundInvalidChar != 0); counter2 ++)
+			{
+				if (stringInput[counter] == validChars [counter2])
+					foundInvalidChar = 0;
+			}
+			if (foundInvalidChar == 1)
+			{
+				printf ("Invalid character found (%c) on position %u of the string.\n", stringInput[counter], counter);
+				invalidExpression = 1;
+			}
+		}
+		/* - - - */
+		/* Now look for invalid parenthesis */
+		for (counter = 0; (counter < stringLenght && invalidExpression == 0); counter ++)
+		{
+			if (stringInput[counter] == '(')
+				numberOpenParenthesis ++;
+			else if (stringInput[counter] == ')')
+			{
+				numberCloseParenthesis ++;
+				if (numberCloseParenthesis > numberOpenParenthesis)
+				{
+					printf ("Invalid parenthesis \')\' found on position %u of the string.\n", counter);
+					invalidExpression = 1;
+				}
+			}
+		}
+		if (numberOpenParenthesis != numberCloseParenthesis && invalidExpression == 0)
+		{
+			printf ("Unclosed parenthesis found.\n");
+			invalidExpression = 1;
+		}
+		/* - - - */
+		/* Next, deal with ' and + */
 	}
 	while (invalidExpression != 0);
 	

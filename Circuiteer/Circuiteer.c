@@ -14,9 +14,9 @@ int
 main (int argc, char *argv[])
 {
 	ChipType chipsArray[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES];
-	char agroupments[MAX_OUTPUTS][32];
-	unsigned short inputs, outputs, numberAgroupments, uSCounter;
+	unsigned short inputs, outputs, uSCounter, numberAgroupments[MAX_OUTPUTS];
 	unsigned short validationLoadChips;
+	char agroupments[MAX_OUTPUTS][32];
 	char inputsNames[MAX_INPUTS][INPUTS_OUTPUTS_MAX_LENGHT_NAME];
 	char outputsNames[MAX_OUTPUTS][INPUTS_OUTPUTS_MAX_LENGHT_NAME];
 	char auxString[128];
@@ -44,6 +44,10 @@ main (int argc, char *argv[])
 		sprintf (auxString, "Enter the corresponding letter to the output number %u:\n", uSCounter);
 		outputsNames[uSCounter][0] = scanfChar (auxString, 0, MAX_ENTRY_LENGHT);
 	}
+	
+	printf("\n");
+	numberAgroupments[0] = readExpression ("Enter the expression for output X\nX = ", agroupments[0], inputsNames[0], inputs, MAX_ENTRY_LENGHT);
+
 	return OK;
 }
 
