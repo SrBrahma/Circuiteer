@@ -50,14 +50,24 @@ typedef struct
 	unsigned short inputsPerOutput;
 } ChipType; 
 
-unsigned
-readTextFileLine (FILE *pFile, char arrayToReturn[]);
 
+/* - chipsLoader - */
 unsigned short
 LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES]);
 
+unsigned
+readTextFileLine (FILE *pFile, char arrayToReturn[]);
+
+/* - generalFunctions - */
+
+void
+CopyString (char destinationArray[], char sourceArray[], unsigned sizeToCopy);
+
+char
+scanfChar (char printfString[], unsigned short allowSpecialChars, unsigned maxEntryLenght);
 
 unsigned short
-scanfUnsigned (char printfString[], unsigned maxEntryLenght, unsigned minValue, unsigned maxValue);
+scanfUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsigned maxEntryLenght);
+
 
 #endif

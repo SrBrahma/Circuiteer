@@ -6,7 +6,7 @@ CFLAGS = -Wall -ansi -c
 LFLAGS = -Wall -ansi -o
 
 EXECS = Circuiteer
-CIRCUITEEROBJS = chipsLoader.o Circuiteer.o 
+CIRCUITEEROBJS = Circuiteer.o chipsLoader.o generalFunctions.o
 
 #regra implicita
 

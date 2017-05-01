@@ -26,13 +26,7 @@ ReadTextFileLine (FILE *pFile, char arrayToReturn[])
 	return charCounter;
 }
 
-void
-CopyString (char destinationArray[], char sourceArray[], unsigned sizeToCopy)
-{
-	unsigned counter;
-	for (counter = 0; counter < sizeToCopy; counter ++)
-		destinationArray[counter] = sourceArray[counter];
-}
+
 /* Will load the chips into the given array */
 unsigned short
 LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES])
@@ -112,7 +106,7 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
 			printf ("Error at stringValidation =: (%c)\n", *stringValidation);
 			return ERROR_STR_TO_UL;
 		}
-		
+		 
 		controlString += 1;
 	} 									/* END OF WHILE LOOP */
 	fclose (pFile);
