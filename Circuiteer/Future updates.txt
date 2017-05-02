@@ -1,0 +1,6 @@
+Must do:
+*) for fgets, a function to remove spaces before EOS, if inputted by the user
+	EX: inputting "1    " instead of "1" will return invalid char " "
+	(or just add " " to the allowed chars)
+	
+(DONE, but as there is nothing in mind to put now, will leave it here so the file isn't empty)

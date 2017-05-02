@@ -64,12 +64,15 @@ void
 CopyString (char destinationArray[], char sourceArray[], unsigned sizeToCopy);
 
 char
-scanfChar (char printfString[], unsigned short allowSpecialChars, unsigned maxEntryLenght);
+fgetsChar (char printfString[], unsigned short allowSpecialChars, unsigned maxEntryLenght);
 
 unsigned short
-scanfUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsigned maxEntryLenght);
+fgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsigned maxEntryLenght);
 
 unsigned short
 readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght);
+
+unsigned short
+checkLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght);
 
 #endif

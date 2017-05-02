@@ -30,27 +30,27 @@ main (int argc, char *argv[])
 	
 	/* Get the number of inputs */
 	sprintf (auxString, "Enter the number of inputs ([1, %u]):\n", MAX_INPUTS);
-	inputs = scanfUnsigned(auxString, 1, MAX_INPUTS, MAX_ENTRY_LENGHT);
+	inputs = fgetsUnsigned(auxString, 1, MAX_INPUTS, MAX_ENTRY_LENGHT);
 	printf("\n");
 	
 	/* Get the letters corresponding to each input */
 	for (uSCounter = 0; uSCounter < inputs; uSCounter ++)
 	{
 		sprintf (auxString, "Enter the corresponding letter to the input number %u:\n", uSCounter);
-		inputsNames[uSCounter][0] = scanfChar (auxString, 0, MAX_ENTRY_LENGHT);
+		inputsNames[uSCounter][0] = fgetsChar (auxString, 0, MAX_ENTRY_LENGHT);
 	}
 	printf("\n");
 	
 	/* Get the number of outputs */
 	sprintf (auxString, "Enter the number of outputs ([1, %u]):\n", MAX_OUTPUTS);
-	outputs = scanfUnsigned(auxString, 1, MAX_OUTPUTS, MAX_ENTRY_LENGHT);
+	outputs = fgetsUnsigned(auxString, 1, MAX_OUTPUTS, MAX_ENTRY_LENGHT);
 	printf("\n");
 	
 	/* Get the letters corresponding to each output */
 	for (uSCounter = 0; uSCounter < outputs; uSCounter ++)
 	{
 		sprintf (auxString, "Enter the corresponding letter to the output number %u:\n", uSCounter);
-		outputsNames[uSCounter][0] = scanfChar (auxString, 0, MAX_ENTRY_LENGHT);
+		outputsNames[uSCounter][0] = fgetsChar (auxString, 0, MAX_ENTRY_LENGHT);
 	}
 	printf("\n");
 	
