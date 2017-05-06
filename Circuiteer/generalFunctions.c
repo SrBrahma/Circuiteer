@@ -10,7 +10,7 @@
 #include "Circuiteer.h"
 #include <string.h>
 
-#define EXPRESSION_DEFAULT_CHARS 			" ()'¬+\0"
+#define EXPRESSION_DEFAULT_CHARS 			" ()'¬+*\0"
 
 #define ERROR_EXCEEDS_MAX_STRING_LENGHT				1
 
@@ -25,6 +25,7 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 	unsigned short stringLenght;
 	unsigned short foundOperandBefore, foundOperandAfter, foundOperator;
 	unsigned short lenExpressionDefaultChars = strlen (EXPRESSION_DEFAULT_CHARS);
+	unsigned lastOperatorPosition;
 	char stringInput [maxEntryLenght];
 	char validChars [lenExpressionDefaultChars + numberOfInputs];
 	
@@ -47,9 +48,18 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 		
 		fgets (stringInput, maxEntryLenght, stdin);
 		if (checkLenghtRemoveEndSpacesNewLineToEOS (stringInput, maxEntryLenght) == ERROR_EXCEEDS_MAX_STRING_LENGHT)
+		{
+			printf ("\nThe input exceeds the maximum lenght allowed (%u).\n", maxEntryLenght);
 			invalidInput = 1;
-			
+		}		
+		
 		stringLenght = strlen(stringInput);
+		
+		if (stringLenght == 0)
+		{
+			printf ("\nThe input must contain at least one char.\n");
+			invalidInput = 1;
+		}
 		
 		/* First look for garbage (chars that are not allowed) */
 		for (counter = 0; (counter < stringLenght && invalidInput == 0); counter ++)
@@ -73,7 +83,7 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 				/* Look for operands */
 			for (counter2 = 0; counter2 < numberOfInputs; counter2 ++)
 			{
-				if (inputsNames[counter2] == stringInput[counter])
+				if (stringInput[counter] == inputsNames[counter2] || stringInput[counter] == '(' || stringInput[counter] == ')')
 				{
 					if (foundOperandBefore == 0)
 						foundOperandBefore = 1;
@@ -86,22 +96,27 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 			}
 			
 				/* Look for operators */
-			if (stringInput[counter] == '+') /* Will add the * operator later */
+			if (stringInput[counter] == '+' || stringInput[counter] == '*')
+			{
+				if (foundOperandBefore == 0 || foundOperator == 1)
+				{
+					printf ("\nInvalid operator \"%c\" on position %u of the string.\n", stringInput[counter], counter);
+					invalidInput = 1;
+				}
+				else
+				{
+					foundOperator = 1;
+					lastOperatorPosition = counter;
+				}
+			}
+			
+			else if (stringInput[counter] == '\'')
 			{
 				if (foundOperandBefore == 0)
 				{
-					printf ("\nInvalid operator \"%c\" on position %u of the string.\n", stringInput[counter], counter);
+					printf ("\nInvalid negation (\') on position %u of the string.\n", counter);
 					invalidInput = 1;
 				}
-				
-				else if (foundOperator == 1)
-				{
-					printf ("\nInvalid operator \"%c\" on position %u of the string.\n", stringInput[counter], counter);
-					invalidInput = 1;
-				}
-				
-				else
-					foundOperator = 1;
 			}
 				/* Look for parenthesis */
 			else if (stringInput[counter] == '(')
@@ -111,15 +126,16 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 			}
 			else if (stringInput[counter] == ')')
 			{
-				foundOperandAfter = 0; /* To avoid stuff like A (B +) */
 				numberCloseParenthesis ++;
+				foundOperandAfter = 0; /* To avoid stuff like A (B +) */
+
 				if (numberCloseParenthesis > numberOpenParenthesis)
 				{
 					printf ("\nInvalid parenthesis \")\" on position %u of the string.\n", counter);
 					invalidInput = 1;
 				}
 			}
-		}
+		} /* End of parenthesis and operators for */
 		if (numberOpenParenthesis != numberCloseParenthesis && invalidInput == 0)
 		{
 			printf ("\nUnclosed parenthesis found.\n");
@@ -129,9 +145,10 @@ readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[
 		/* If there is a operator unused on the end */
 		else if (foundOperator == 1 && invalidInput == 0)
 		{
-			printf ("\nInvalid operator \"%c\" on the last position %u of the string.\n", stringInput[counter - 1], counter - 1);
+			printf ("\nInvalid operator \"%c\" on the position %u of the string.\n", stringInput[lastOperatorPosition], lastOperatorPosition);
 			invalidInput = 1;
 		}
+		
 	}
 	while (invalidInput != 0);
 	/* End of Main Loop */
@@ -160,9 +177,16 @@ fgetsChar (char printfString[], unsigned short allowSpecialChars, unsigned maxEn
 		
 		fgets (stringInput, maxEntryLenght, stdin);
 		if (checkLenghtRemoveEndSpacesNewLineToEOS (stringInput, maxEntryLenght) == ERROR_EXCEEDS_MAX_STRING_LENGHT)
+		{
+			printf ("\nThe input exceeds the maximum lenght allowed (%u)\n", maxEntryLenght);
 			invalidInput = 1;
-			
-		if (stringInput[1] != EOS)
+		}		
+		else if (stringInput[0] == EOS)
+		{
+			printf ("\nThe input must contain a char.\n");
+			invalidInput = 1;	
+		}
+		else if (stringInput[1] != EOS)
 		{
 			printf ("\nEnter only a single char.\n");
 			invalidInput = 1;
@@ -195,23 +219,33 @@ fgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsign
 		
 		fgets (stringInput, maxEntryLenght, stdin);
 		if (checkLenghtRemoveEndSpacesNewLineToEOS (stringInput, maxEntryLenght) == ERROR_EXCEEDS_MAX_STRING_LENGHT)
-			invalidInput = 1;
-			
-		value = (unsigned short) strtoul (stringInput, &validationStrToUl, 10);
-		if (*validationStrToUl != EOS || stringInput[0] == '-')
 		{
-			printf ("\nEnter a non-negative integer.\n");
+			printf ("\nThe input exceeds the maximum lenght allowed (%u)\n", maxEntryLenght);
 			invalidInput = 1;
 		}
-		else if (value < minValue)
+		else if (stringInput[0] == EOS)
 		{
-			printf ("\nEnter with a number greater than or equal to %u.\n", minValue);
-			invalidInput = 1;
+			printf ("\nThe input must contain a number.\n");
+			invalidInput = 1;	
 		}
-		else if (maxValue != 0 && value > maxValue)
+		else
 		{
-			printf ("\nEnter with a number lesser than or equal to %u.\n", maxValue);
-			invalidInput = 1;
+			value = (unsigned short) strtoul (stringInput, &validationStrToUl, 10);
+			if ((*validationStrToUl != EOS || stringInput[0] == '-') && invalidInput == 0)
+			{
+				printf ("\nEnter a non-negative integer.\n");
+				invalidInput = 1;
+			}
+			else if (value < minValue)
+			{
+				printf ("\nEnter with a number greater than or equal to %u.\n", minValue);
+				invalidInput = 1;
+			}
+			else if (maxValue != 0 && value > maxValue)
+			{
+				printf ("\nEnter with a number lesser than or equal to %u.\n", maxValue);
+				invalidInput = 1;
+			}
 		}
 	}
 	while (invalidInput != 0);
@@ -222,7 +256,7 @@ unsigned short
 checkLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght)
 {
 	unsigned short foundNewLineChar = 0;
-	unsigned lastValidCharPosition = 0;
+	short int lastValidCharPosition = -1; /* So if the first char is \n, the "stringVar [lastValidCharPosition + 1] = EOS;" will still work. */
 	unsigned counter;
 	
 	/* This "for" must be incremental, as if it was decremental it could find false-positive garbage */ 
