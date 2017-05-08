@@ -37,6 +37,7 @@
 
 /* General macros */
 #define EOS									'\0'
+#define MAX_ENTRY_LENGHT					128
 
 /* - - - - - - - -*/
 

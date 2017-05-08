@@ -7,8 +7,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Circuiteer.h"
 #include <string.h>
+#include "Circuiteer.h"
 
 #define EXPRESSION_DEFAULT_CHARS 			" ()'¬+*\0"
 
@@ -255,24 +255,30 @@ fgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsign
 unsigned short
 checkLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght)
 {
-	unsigned short foundNewLineChar = 0;
+	unsigned short foundNewLineChar = 0, foundEOSChar = 0;
 	short int lastValidCharPosition = -1; /* So if the first char is \n, the "stringVar [lastValidCharPosition + 1] = EOS;" will still work. */
 	unsigned counter;
 	
 	/* This "for" must be incremental, as if it was decremental it could find false-positive garbage */ 
-	for (counter = 0; (counter < maxEntryLenght && foundNewLineChar == 0); counter ++)
+	for (counter = 0; (counter < maxEntryLenght && foundNewLineChar == 0 && foundEOSChar == 0); counter ++)
 	{
 		if (stringVar [counter] == '\n')
 			foundNewLineChar = 1;
+			
+		else if (stringVar [counter] == EOS)
+			foundEOSChar = 1;	
+			
 		else if (stringVar [counter] != ' ')
 			lastValidCharPosition = counter;
 	}
 	
 	/* If no newLine char found, the user filled the entire string buffer, so, return ERROR */
-	if (foundNewLineChar == 0)
+	if (foundNewLineChar == 0 && foundEOSChar == 0)
 		return ERROR_EXCEEDS_MAX_STRING_LENGHT;
 	
+	/* Remove the useless spaces at the end of the string */
 	stringVar [lastValidCharPosition + 1] = EOS;
+		
 	return OK;
 }
 	

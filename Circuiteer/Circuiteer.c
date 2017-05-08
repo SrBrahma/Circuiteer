@@ -5,7 +5,7 @@
 
 
 #define OK									0
-#define MAX_ENTRY_LENGHT					128
+
 #define INPUTS_OUTPUTS_MAX_LENGHT_NAME		1
 #define MAX_INPUTS							4
 #define MAX_OUTPUTS							8
@@ -26,6 +26,7 @@ main (int argc, char *argv[])
 	
 	/* Load the chips from the .txt file */
 	validationLoadChips = LoadChips (chipsArray);
+	printf("hmmOk\n");
 	printf("DEBUG: LoadChip Exit Code: %u\n\n", validationLoadChips);
 	
 	/* Get the number of inputs */
