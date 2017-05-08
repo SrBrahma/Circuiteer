@@ -41,6 +41,11 @@
 
 /* - - - - - - - -*/
 
+/* Errors */
+#define ERROR_EXCEEDS_MAX_STRING_LENGHT				-1
+/* - - - - - - - -*/
+
+
 typedef struct
 {
 	char name[MAX_CHIP_NAME_SIZE];
@@ -56,24 +61,22 @@ typedef struct
 unsigned short
 LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES]);
 
-unsigned
-readTextFileLine (FILE *pFile, char arrayToReturn[]);
-
 /* - generalFunctions - */
 
-void
-CopyString (char destinationArray[], char sourceArray[], unsigned sizeToCopy);
 
 char
-fgetsChar (char printfString[], unsigned short allowSpecialChars, unsigned maxEntryLenght);
+FgetsChar (char printfString[], unsigned short allowSpecialChars, unsigned maxEntryLenght);
 
 unsigned short
-fgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsigned maxEntryLenght);
+FgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsigned maxEntryLenght);
 
 unsigned short
-readExpression (char printfString[], char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght);
+ReadExpression (char printfString[], char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght);
 
-unsigned short
-checkLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght);
+int
+CheckLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght);
+
+char
+PrintAndReadMenu (unsigned maxEntryLenght);
 
 #endif

@@ -1,12 +1,13 @@
+GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
 
 CC = gcc
 LD = gcc
 
-CFLAGS = -Wall -ansi -c
+CFLAGS = -Wall -ansi -c -DVERSION=\"$(GIT_VERSION)\"
 LFLAGS = -Wall -ansi -o
 
 EXECS = Circuiteer
-CIRCUITEEROBJS = Circuiteer.o chipsLoader.o generalFunctions.o
+CIRCUITEEROBJS = Circuiteer.o chipsLoader.o generalFunctions.o menu.o
 
 #regra implicita
 

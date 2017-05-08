@@ -31,7 +31,7 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
     
     while (fgets (textLineString, MAX_ENTRY_LENGHT, pFile)) /* Read the lines until fgets returns NULL, aka EOF */
     {
-        checkLenghtRemoveEndSpacesNewLineToEOS (textLineString, MAX_ENTRY_LENGHT); /* String treatment */
+        CheckLenghtRemoveEndSpacesNewLineToEOS (textLineString, MAX_ENTRY_LENGHT); /* String treatment */
         charCounter = strlen (textLineString);
         
         /*printf ("RAW: %s, control = %i\n", textLineString, controlString);*/
@@ -50,12 +50,12 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
         
         if (controlString == 1) /* Chip Name */
         {
-            CopyString (auxChipVar.name, textLineString, charCounter + 1); /* + 1 to include the EOS char */
+			strcpy (auxChipVar.name, textLineString);
         }
         
         else if (controlString == 2) /* Chip Description */
         {
-            CopyString (auxChipVar.description, textLineString, charCounter + 1); /* + 1 to include the EOS char */
+			strcpy (auxChipVar.description, textLineString);
         }
         
         else if (controlString == 3) /* Chip kind */
@@ -77,14 +77,14 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
         {
             auxChipVar.inputsPerOutput = (unsigned short) strtoul (textLineString, &stringValidation, 10);
             controlString = -1; /* Restart the counter/control */
-            /* DEBUG*/
+            /* DEBUG
             printf ("Name: %s\n", auxChipVar.name);
             printf ("Description: %s\n", auxChipVar.description);
             printf ("Gate: %u\n", auxChipVar.gateKind);
             printf ("Inputs: %u\n", auxChipVar.inputs);
             printf ("Outputs: %u\n", auxChipVar.outputs);
             printf ("InputsPerOutputs: %u\n\n", auxChipVar.inputsPerOutput);
-            /**/
+            */
             
         }
         
