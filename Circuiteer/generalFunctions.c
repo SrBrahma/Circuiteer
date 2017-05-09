@@ -11,16 +11,16 @@
 #include "Circuiteer.h"
 
 #define EXPRESSION_DEFAULT_CHARS            " ()'¬+*\0"
+#define INVALID_LAST_CHARS_FOR_AFTER_NOT    " (+*"          /* For ' not char. This can't happen +' */
 
 
 
 
-unsigned short
-ReadExpression (char printfString[], char agroupmentsReturn[], char inputLetter[], unsigned short numberOfInputs, unsigned maxEntryLenght)
+void
+ReadExpression (const char printfString[], char rawExpression[], char inputLetter[], unsigned short numberOfInputs, unsigned maxEntryLenght)
 {
         /* Text Input */
-    char stringInput [maxEntryLenght];
-    unsigned short stringInputLenght;
+    unsigned short rawExpressionLenght;
         /* Valid Chars */
     unsigned short validCharsLenght = strlen (EXPRESSION_DEFAULT_CHARS) + numberOfInputs; /* This var is used later */
     char validChars [validCharsLenght];
@@ -31,9 +31,6 @@ ReadExpression (char printfString[], char agroupmentsReturn[], char inputLetter[
     unsigned short numberOpenParenthesis, numberCloseParenthesis;
         /* Errors */
     unsigned short foundInvalidChar, invalidInput;
-        /* Others */
-    unsigned short numberOfAgroupments = 0;
-    
     
     /* Load the valid chars variable */
     strcpy (validChars, EXPRESSION_DEFAULT_CHARS);
@@ -48,61 +45,60 @@ ReadExpression (char printfString[], char agroupmentsReturn[], char inputLetter[
         
         printf ("%s", printfString);
         
-        fgets (stringInput, maxEntryLenght, stdin);
-        stringInputLenght = CheckLenghtRemoveEndSpacesNewLineToEOS (stringInput, maxEntryLenght);
-        if (stringInputLenght == -1)
+        fgets (rawExpression, maxEntryLenght, stdin);
+        rawExpressionLenght = CheckLenghtRemoveEndSpacesNewLineToEOS (rawExpression, maxEntryLenght);
+        if (rawExpressionLenght == -1)
         {
             printf ("\nThe input exceeds the maximum lenght allowed (%u).\n", maxEntryLenght);
             invalidInput = 1;
         }       
         
         
-        if (stringInputLenght == 0)
+        if (rawExpressionLenght == 0)
         {
             printf ("\nThe input must contain at least one char.\n");
             invalidInput = 1;
         }
         
-        /* First look for garbage (chars that are not allowed) */
-        for (counter = 0; (counter < stringInputLenght && invalidInput == 0); counter ++)
+    /* First look for garbage (chars that are not allowed) */
+        for (counter = 0; (counter < rawExpressionLenght && invalidInput == 0); counter ++)
         {
             foundInvalidChar = 1;
             for (counter2 = 0; (counter2 < validCharsLenght && foundInvalidChar != 0); counter2 ++)
             {
-                if (stringInput[counter] == validChars [counter2])
+                if (rawExpression[counter] == validChars [counter2])
                     foundInvalidChar = 0;
             }
             if (foundInvalidChar == 1)
             {
-                printf ("\nInvalid character \"%c\" on position %u of the string.\n", stringInput[counter], counter);
+                printf ("\nInvalid character \"%c\" on position %u of the string.\n", rawExpression[counter], counter);
                 invalidInput = 1;
             }
         }
         
-        /* Now look for invalid parenthesis and invalid operators*/
-        for (counter = 0; (counter < stringInputLenght && invalidInput == 0); counter ++)
+    /* Now look for invalid parenthesis and invalid operators*/
+        for (counter = 0; (counter < rawExpressionLenght && invalidInput == 0); counter ++)
         {
                 /* Look for operands */
             for (counter2 = 0; counter2 < numberOfInputs; counter2 ++)
             {
-                if (stringInput[counter] == inputLetter[counter2] || stringInput[counter] == '(' || stringInput[counter] == ')')
+                if (rawExpression[counter] == inputLetter[counter2] || rawExpression[counter] == '(' || rawExpression[counter] == ')')
                 {
                     if (foundOperandBefore == 0)
                         foundOperandBefore = 1;
                     else if (foundOperandBefore == 1 && foundOperator == 1)
                     {
-                        foundOperandBefore = 0;
                         foundOperator = 0;
                     }
                 }
             }
             
                 /* Look for operators */
-            if (stringInput[counter] == '+' || stringInput[counter] == '*')
+            if (rawExpression[counter] == '+' || rawExpression[counter] == '*')
             {
                 if (foundOperandBefore == 0 || foundOperator == 1)
                 {
-                    printf ("\nInvalid operator \"%c\" on position %u of the string.\n", stringInput[counter], counter);
+                    printf ("\nInvalid operator \"%c\" on position %u of the string.\n", rawExpression[counter], counter);
                     invalidInput = 1;
                 }
                 else
@@ -111,22 +107,33 @@ ReadExpression (char printfString[], char agroupmentsReturn[], char inputLetter[
                     lastOperatorPosition = counter;
                 }
             }
-            
-            else if (stringInput[counter] == '\'')
+				/* Look for NOT ', ex: A' */
+            else if (rawExpression[counter] == '\'')
             {
-                if (foundOperandBefore == 0)
+                if (counter == 0)
                 {
                     printf ("\nInvalid negation (\') on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
+                else
+                {
+                    for (counter2 = 0; counter2 < strlen (INVALID_LAST_CHARS_FOR_AFTER_NOT); counter2 ++)
+                    {
+                        if (rawExpression[counter-1] == INVALID_LAST_CHARS_FOR_AFTER_NOT[counter2])
+                        {
+                            printf ("\nInvalid negation (\') on position %u of the string.\n", counter);
+                            invalidInput = 1;
+                        }
+                    }
+                }
             }
                 /* Look for parenthesis */
-            else if (stringInput[counter] == '(')
+            else if (rawExpression[counter] == '(')
             {
                 numberOpenParenthesis ++;
                 foundOperandBefore = 0; /* To avoid stuff like A (+ B) */
             }
-            else if (stringInput[counter] == ')')
+            else if (rawExpression[counter] == ')')
             {
                 numberCloseParenthesis ++;
                 foundOperandAfter = 0; /* To avoid stuff like A (B +) */
@@ -147,17 +154,32 @@ ReadExpression (char printfString[], char agroupmentsReturn[], char inputLetter[
         /* If there is a operator unused on the end */
         else if (foundOperator == 1 && invalidInput == 0)
         {
-            printf ("\nInvalid operator \"%c\" on the position %u of the string.\n", stringInput[lastOperatorPosition], lastOperatorPosition);
+            printf ("\nInvalid operator \"%c\" on the position %u of the string.\n", rawExpression[lastOperatorPosition], lastOperatorPosition);
             invalidInput = 1;
         }
-        
     }
-    while (invalidInput != 0);
-    /* End of Main Loop */
-    
-    return numberOfAgroupments;
+    while (invalidInput != 0);   /* End of Main Loop */
 } /* End of getExpression function */
 
+unsigned short
+ExpressionToAgroupments (const char originalExpression[],  char newExpression[],
+                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxStringLenght)
+{
+    unsigned short numberAgroupments = 0;
+    unsigned short counter, counter2 = 0;
+    unsigned short originalStringLenght = strlen (originalExpression);
+    
+    
+    /* Copy the old string to the new string, but without the spaces */
+    for (counter = 0; counter <= originalStringLenght; counter ++)
+        if (originalExpression[counter] != ' ')
+        {
+            newExpression[counter2] = originalExpression[counter];
+            counter2 ++;
+        }
+    printf ("New expression is: %s\n", newExpression);
+    return numberAgroupments;
+}
 char
 FgetsChar (char printfString[], unsigned short allowNotLettersChars, unsigned maxEntryLenght)
 {

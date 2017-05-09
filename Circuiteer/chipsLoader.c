@@ -8,10 +8,6 @@
 
 #define COMMENTARY_START                    '#'
 
-/* Will load the array with the chars, and will return the amount of chars, including the EOS.
- * EX: "abc\0" will return 4 chars */
-
-
 /* Will load the chips into the given array */
 unsigned short
 LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES])

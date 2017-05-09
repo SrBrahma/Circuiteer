@@ -1,0 +1,1 @@
+Will leave the numberInputs there, even as the inputLetter is a string. Maybe in the future the inputs names will acept a string.

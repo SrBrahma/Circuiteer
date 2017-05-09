@@ -5,11 +5,11 @@
 
 
 #define OK									0
-
+ 
 #define OUTPUTS_MAX_LENGHT_NAME				1
 #define MAX_INPUTS							4
 #define MAX_OUTPUTS							8
-#define MOTD								" - Circuiteer v%s -\nThis program still in development. If found bugs, please contact.\n\n"
+#define MOTD								" =-=-= Circuiteer v%s =-=-=\nThis program still in development. If found bugs, please contact.\n\n"
 int
 main (int argc, char *argv[])
 {
@@ -21,7 +21,7 @@ main (int argc, char *argv[])
 	char agroupments[MAX_OUTPUTS][32];
 	char inputLetter[MAX_INPUTS];
 	char outputsNames[MAX_OUTPUTS][OUTPUTS_MAX_LENGHT_NAME];
-	char auxString[128];
+	char auxString[128], rawExpression[MAX_ENTRY_LENGHT], treatedExpression[MAX_ENTRY_LENGHT];
 	
 	/* Print the Message of the day */
 	printf (MOTD, VERSION);
@@ -67,7 +67,8 @@ main (int argc, char *argv[])
 				for (uSCounter = 0; uSCounter < outputs; uSCounter ++)
 				{
 					sprintf (auxString, "Enter the expression for output %c\n%c = ", outputsNames[uSCounter][0], outputsNames[uSCounter][0]);
-					numberAgroupments[0] = ReadExpression (auxString, agroupments[0], inputLetter, inputs, MAX_ENTRY_LENGHT);
+					ReadExpression (auxString, rawExpression, inputLetter, inputs, MAX_ENTRY_LENGHT);
+					numberAgroupments[uSCounter] = ExpressionToAgroupments (rawExpression, treatedExpression, NULL, MAX_ENTRY_LENGHT);
 				}
 				break;
 				
@@ -75,7 +76,8 @@ main (int argc, char *argv[])
 				while (1)
 				{
 					sprintf (auxString, "IN DEBUG: Inputs are = A, B, C, D. Enter the expression\nX = ");
-					ReadExpression (auxString, agroupments[0], "ABCD", 4, MAX_ENTRY_LENGHT);
+					ReadExpression (auxString, rawExpression, "ABCD", 4, MAX_ENTRY_LENGHT);
+					ExpressionToAgroupments (rawExpression, treatedExpression, NULL, MAX_ENTRY_LENGHT);
 				}
 				break;
 				

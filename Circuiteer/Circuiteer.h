@@ -30,6 +30,11 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
+/* Agroupments stuff */
+#define MAX_AGROUPMENT_LENGHT				32
+#define MAX_AGROUPMENTS						MAX_ENTRY_LENGHT/32 /* = 4 */
+
+/* - - - - - - - - -*/
 /* Program validation */
 #define OK									0
 
@@ -70,9 +75,12 @@ FgetsChar (char printfString[], unsigned short allowSpecialChars, unsigned maxEn
 unsigned short
 FgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsigned maxEntryLenght);
 
-unsigned short
-ReadExpression (char printfString[], char agroupmentsReturn[], char inputsNames[], unsigned short numberOfInputs, unsigned maxEntryLenght);
+void
+ReadExpression (const char printfString[], char rawExpression[], char inputLetter[], unsigned short numberOfInputs, unsigned maxEntryLenght);
 
+unsigned short
+ExpressionToAgroupments (const char originalExpression[],  char newExpression[],
+                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxStringLenght);
 int
 CheckLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght);
 
