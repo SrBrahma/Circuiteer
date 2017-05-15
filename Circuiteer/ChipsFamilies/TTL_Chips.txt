@@ -4,25 +4,25 @@
 #
 #typedef struct
 #{
-#	char name[32];
-#	char description[128];
-#	unsigned short gate kind; /*see the gates index. eg: AND = 0, NOT = 6.*/
-#	unsigned short inputs;
-#	unsigned short outputs;
-#	unsigned short inputsPerOutput;
+#   char name[32];
+#   char description[128];
+#   unsigned short gate kind; /*see the gates index. eg: AND = 0, NOT = 6.*/
+#   unsigned short inputs;
+#   unsigned short outputs;
+#   unsigned short inputsPerOutput;
 #} ChipType;
 #
 #Gates kinds:
-#AND_INDEX						0
-#OR_INDEX						1
+#AND_INDEX                      0
+#OR_INDEX                       1
 #
-#NAND_INDEX						2
-#NOR_INDEX						3
+#NAND_INDEX                     2
+#NOR_INDEX                      3
 #
-#XOR_INDEX						4
-#XNOR_INDEX						5
+#XOR_INDEX                      4
+#XNOR_INDEX                     5
 #
-#NOT_INDEX						6
+#NOT_INDEX                      6
 #
 
 7400 - Quad NAND 2 inputs

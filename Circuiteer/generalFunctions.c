@@ -21,16 +21,23 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
 {
         /* Text Input */
     unsigned short rawExpressionLenght;
+    
         /* Valid Chars */
     unsigned short validCharsLenght = strlen (EXPRESSION_DEFAULT_CHARS) + numberOfInputs; /* This var is used later */
     char validChars [validCharsLenght];
+    
         /* Error treatment */
     unsigned short counter, counter2;
     unsigned short lastOperatorPosition;
-    unsigned short foundOperandBefore, foundOperandAfter, foundOperator;
+    unsigned short foundOperand, foundOperator;
     unsigned short numberOpenParenthesis, numberCloseParenthesis;
+    
         /* Errors */
-    unsigned short foundInvalidChar, invalidInput;
+    unsigned short foundInvalidChar;
+    unsigned short invalidInput;
+    /* - - - END OF VARS ASSIGNMENT - - - */
+    
+    
     
     /* Load the valid chars variable */
     strcpy (validChars, EXPRESSION_DEFAULT_CHARS);
@@ -40,7 +47,7 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
     do
     {
         numberOpenParenthesis = numberCloseParenthesis = 0;
-        foundOperandBefore = foundOperandAfter = foundOperator = 0;
+        foundOperand = foundOperator = 0;
         invalidInput = 0;
         
         printf ("%s", printfString);
@@ -49,14 +56,14 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
         rawExpressionLenght = CheckLenghtRemoveEndSpacesNewLineToEOS (rawExpression, maxEntryLenght);
         if (rawExpressionLenght == -1)
         {
-            printf ("\nThe input exceeds the maximum lenght allowed (%u).\n", maxEntryLenght);
+            printf ("\nError 500: The input exceeds the maximum lenght allowed (%u).\n", maxEntryLenght);
             invalidInput = 1;
         }       
         
         
         if (rawExpressionLenght == 0)
         {
-            printf ("\nThe input must contain at least one char.\n");
+            printf ("\nError 501: The input must contain at least one char.\n");
             invalidInput = 1;
         }
         
@@ -71,7 +78,7 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
             }
             if (foundInvalidChar == 1)
             {
-                printf ("\nInvalid character \"%c\" on position %u of the string.\n", rawExpression[counter], counter);
+                printf ("\nError 502: Invalid character \"%c\" on position %u of the string.\n", rawExpression[counter], counter);
                 invalidInput = 1;
             }
         }
@@ -82,23 +89,24 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                 /* Look for operands */
             for (counter2 = 0; counter2 < numberOfInputs; counter2 ++)
             {
-                if (rawExpression[counter] == inputLetter[counter2] || rawExpression[counter] == '(' || rawExpression[counter] == ')')
+                if (rawExpression[counter] == inputLetter[counter2])
                 {
-                    if (foundOperandBefore == 0)
-                        foundOperandBefore = 1;
-                    else if (foundOperandBefore == 1 && foundOperator == 1)
-                    {
+                    /* If finds an operand and a previous operand and a operator exists, set foundOperator 0. Ex: A + ___, B */
+                    if (foundOperand == 1 && foundOperator == 1)
                         foundOperator = 0;
-                    }
+                        
+                    /* Found the operand. */
+                    foundOperand = 1;
                 }
             }
             
-                /* Look for operators */
+            /* Look for operators */
             if (rawExpression[counter] == '+' || rawExpression[counter] == '*')
             {
-                if (foundOperandBefore == 0 || foundOperator == 1)
+                /* If no operands were found directly before the operators, or if two operators next to each other are found */
+                if (foundOperand == 0 || foundOperator == 1)
                 {
-                    printf ("\nInvalid operator \"%c\" on position %u of the string.\n", rawExpression[counter], counter);
+                    printf ("\nError 503: Invalid operator \"%c\" on position %u of the string.\n", rawExpression[counter], counter);
                     invalidInput = 1;
                 }
                 else
@@ -107,12 +115,13 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                     lastOperatorPosition = counter;
                 }
             }
-				/* Look for NOT ', ex: A' */
+            
+            /* Look for invalid NOT ', ex: ', (', +' */
             else if (rawExpression[counter] == '\'')
             {
                 if (counter == 0)
                 {
-                    printf ("\nInvalid negation (\') on position %u of the string.\n", counter);
+                    printf ("\nError 504: Invalid negation (\') on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
                 else
@@ -121,65 +130,63 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                     {
                         if (rawExpression[counter-1] == INVALID_LAST_CHARS_FOR_AFTER_NOT[counter2])
                         {
-                            printf ("\nInvalid negation (\') on position %u of the string.\n", counter);
+                            printf ("\nError 505: Invalid negation (\') on position %u of the string.\n", counter);
                             invalidInput = 1;
                         }
                     }
                 }
             }
-                /* Look for parenthesis */
+            
+            /* Look for parenthesis */
             else if (rawExpression[counter] == '(')
             {
                 numberOpenParenthesis ++;
-                foundOperandBefore = 0; /* To avoid stuff like A (+ B) */
+                foundOperator = 0;
+                foundOperand = 0; /* To avoid stuff like A (+ B) */
             }
             else if (rawExpression[counter] == ')')
             {
                 numberCloseParenthesis ++;
-                foundOperandAfter = 0; /* To avoid stuff like A (B +) */
-
-                if (numberCloseParenthesis > numberOpenParenthesis)
+                
+                /* To avoid stuff like A (B +) */
+                if (foundOperator == 1)
                 {
-                    printf ("\nInvalid parenthesis \")\" on position %u of the string.\n", counter);
+                    printf("\nError 506: Invalid parenthesis \")\" on position %u of the string.\n", counter);
+                    invalidInput = 1;
+                }
+                
+                else if (numberCloseParenthesis > numberOpenParenthesis)
+                {
+                    printf ("\nError 508: Invalid parenthesis \")\" on position %u of the string.\n", counter);
+                    invalidInput = 1;
+                }
+                
+                else if (foundOperand == 0)
+                {
+                    printf("\nError 507: Invalid empty parenthesis \")\" on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
             }
-        } /* End of parenthesis and operators for */
+        } /* End of "FOR LOOP" - parenthesis and operators */
+        
+        /* If there are unclosed parenthesis */
         if (numberOpenParenthesis != numberCloseParenthesis && invalidInput == 0)
         {
-            printf ("\nUnclosed parenthesis found.\n");
+            printf ("\nError 509: Unclosed parenthesis found.\n");
             invalidInput = 1;
         }
         
         /* If there is a operator unused on the end */
         else if (foundOperator == 1 && invalidInput == 0)
         {
-            printf ("\nInvalid operator \"%c\" on the position %u of the string.\n", rawExpression[lastOperatorPosition], lastOperatorPosition);
+            printf ("\nError 510: Invalid operator \"%c\" on the position %u of the string.\n", rawExpression[lastOperatorPosition], lastOperatorPosition);
             invalidInput = 1;
         }
     }
     while (invalidInput != 0);   /* End of Main Loop */
 } /* End of getExpression function */
 
-unsigned short
-ExpressionToAgroupments (const char originalExpression[],  char newExpression[],
-                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxStringLenght)
-{
-    unsigned short numberAgroupments = 0;
-    unsigned short counter, counter2 = 0;
-    unsigned short originalStringLenght = strlen (originalExpression);
-    
-    
-    /* Copy the old string to the new string, but without the spaces */
-    for (counter = 0; counter <= originalStringLenght; counter ++)
-        if (originalExpression[counter] != ' ')
-        {
-            newExpression[counter2] = originalExpression[counter];
-            counter2 ++;
-        }
-    printf ("New expression is: %s\n", newExpression);
-    return numberAgroupments;
-}
+
 char
 FgetsChar (char printfString[], unsigned short allowNotLettersChars, unsigned maxEntryLenght)
 {

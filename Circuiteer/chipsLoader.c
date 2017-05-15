@@ -46,12 +46,12 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
         
         if (controlString == 1) /* Chip Name */
         {
-			strcpy (auxChipVar.name, textLineString);
+            strcpy (auxChipVar.name, textLineString);
         }
         
         else if (controlString == 2) /* Chip Description */
         {
-			strcpy (auxChipVar.description, textLineString);
+            strcpy (auxChipVar.description, textLineString);
         }
         
         else if (controlString == 3) /* Chip kind */

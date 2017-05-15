@@ -9,9 +9,11 @@ LFLAGS = -Wall -ansi -o
 EXECS = Circuiteer
 CIRCUITEEROBJS = Circuiteer.o chipsLoader.o generalFunctions.o menu.o
 
-#regra implicita
+
 
 all: $(EXECS)
+
+#implicit rule
 
 .c.o:
 	$(CC) $(CFLAGS) $<
