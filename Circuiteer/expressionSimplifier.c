@@ -48,12 +48,15 @@ ExpressionToAgroupments (const char oldExpression[],  char newExpression[],
                 /* De morgan */
             }
             
-            else if (openParenthesisBeforeClosePos == 0 && (newExpression[firstCloseParenthesisPos + 1] == '+' 
+            else if (openParenthesisBeforeClosePos == 0 && (newExpression[firstCloseParenthesisPos + 1] == '+'
+                                                        || newExpression[firstCloseParenthesisPos + 1] == ')'
                                                         || newExpression[firstCloseParenthesisPos + 1] == EOS))
                     removeParentheses = 1;
                     
             else if (openParenthesisBeforeClosePos > 0)
-                if (newExpression[openParenthesisBeforeClosePos - 1] == '+' && (newExpression[firstCloseParenthesisPos + 1] == '+'
+                if ((newExpression[openParenthesisBeforeClosePos - 1] == '+' 
+                || newExpression[openParenthesisBeforeClosePos - 1] == '(') && (newExpression[firstCloseParenthesisPos + 1] == '+'
+                                                                            || newExpression[firstCloseParenthesisPos + 1] == ')'
                                                                             || newExpression[firstCloseParenthesisPos + 1] == EOS))
                     removeParentheses = 1;
             
