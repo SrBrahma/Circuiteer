@@ -7,7 +7,7 @@ CFLAGS = -Wall -ansi -c -DVERSION=\"$(GIT_VERSION)\"
 LFLAGS = -Wall -ansi -o
 
 EXECS = Circuiteer
-CIRCUITEEROBJS = Circuiteer.o chipsLoader.o generalFunctions.o menu.o
+CIRCUITEEROBJS = Circuiteer.o chipsLoader.o generalFunctions.o menu.o expressionSimplifier.c
 
 
 

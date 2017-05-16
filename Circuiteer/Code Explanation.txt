@@ -1,0 +1,22 @@
+=============================
+Remove Parenthesis
+
+Expression: AB+(A'B')+C
+            0123456789a
+
+( pos = 3
+) pos = 8
+
+sprintf
+(3, 0,
+ 4, 4,
+    9
+
+1) AB+
+2) AB+A'B'
+3) AB+A'B'+C
+
+sprintf (auxExpression, "%.*s%.*s%s", openParenthesisBeforeClosePos, newExpression,
+                                      firstCloseParenthesisPos - openParenthesisBeforeClosePos - 1, newExpression + openParenthesisBeforeClosePos + 1,
+                                      pointerCloseParenthesis + 1);
+=============================

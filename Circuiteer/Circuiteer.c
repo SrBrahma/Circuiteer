@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Circuiteer.h"
 #include <string.h>
+#include "Circuiteer.h"
+
 
 
 #define OK                                  0
@@ -80,7 +81,7 @@ main (int argc, char *argv[])
                 {
                     sprintf (auxString, "IN DEBUG: Inputs are = A, B, C, D. Enter the expression\nX = ");
                     ReadExpression (auxString, rawExpression, "ABCD", 4, MAX_ENTRY_LENGHT);
-                    /* ExpressionToAgroupments (rawExpression, treatedExpression, NULL, MAX_ENTRY_LENGHT); */
+                    ExpressionToAgroupments (rawExpression, treatedExpression, NULL, MAX_EXPRESSION_LENGHT);
                 }
                 break;
                 
