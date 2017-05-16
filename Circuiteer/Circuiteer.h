@@ -45,6 +45,10 @@
 #define MAX_ENTRY_LENGHT                    128
 #define MAX_EXPRESSION_LENGHT               256
 
+#define OUTPUTS_MAX_LENGHT_NAME             1
+#define MAX_INPUTS                          4
+#define MAX_OUTPUTS                         8
+
 /* - - - - - - - -*/
 
 /* Errors */
@@ -62,9 +66,10 @@ typedef struct
     unsigned short inputsPerOutput;
 } ChipType; 
 
+typedef unsigned char byte;
 
 /* - chipsLoader - */
-unsigned short
+byte
 LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES]);
 
 /* - generalFunctions - */
@@ -82,6 +87,10 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
 unsigned short
 ExpressionToAgroupments (const char originalExpression[],  char newExpression[],
                          char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxStringLenght);
+
+void
+ApplyKarnaugh (const char oldExpression[], char newExpression [], unsigned maxEntryLenght);
+
 int
 CheckLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght);
 

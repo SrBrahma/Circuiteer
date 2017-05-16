@@ -7,16 +7,14 @@
 
 #define OK                                  0
  
-#define OUTPUTS_MAX_LENGHT_NAME             1
-#define MAX_INPUTS                          4
-#define MAX_OUTPUTS                         8
+
 #define MOTD                                " =-=-= Circuiteer v%s =-=-=\nThis program still in development. If found bugs, please contact.\n\n"
 int
 main (int argc, char *argv[])
 {
     ChipType chipsArray[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES];
     unsigned short inputs, outputs, uSCounter, numberAgroupments[MAX_OUTPUTS];
-    unsigned short validationLoadChips;
+    byte validationLoadChips;
     unsigned short exitChoice = 0;
     char menuChoice1;
     char agroupments[MAX_OUTPUTS][32];
@@ -81,7 +79,10 @@ main (int argc, char *argv[])
                 {
                     sprintf (auxString, "IN DEBUG: Inputs are = A, B, C, D. Enter the expression\nX = ");
                     ReadExpression (auxString, rawExpression, "ABCD", 4, MAX_ENTRY_LENGHT);
+                    ApplyKarnaugh (rawExpression, NULL, MAX_EXPRESSION_LENGHT);
+                    /*
                     ExpressionToAgroupments (rawExpression, treatedExpression, NULL, MAX_EXPRESSION_LENGHT);
+                    */
                 }
                 break;
                 

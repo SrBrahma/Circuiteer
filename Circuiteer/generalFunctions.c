@@ -29,12 +29,12 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
         /* Error treatment */
     unsigned short counter, counter2;
     unsigned short lastOperatorPosition;
-    unsigned short foundOperand, foundOperator;
+    byte foundOperand, foundOperator;
     unsigned short numberOpenParenthesis, numberCloseParenthesis;
     
         /* Errors */
-    unsigned short foundInvalidChar;
-    unsigned short invalidInput;
+    byte foundInvalidChar;
+    byte invalidInput;
     /* - - - END OF VARS ASSIGNMENT - - - */
     
     
@@ -191,7 +191,7 @@ char
 FgetsChar (char printfString[], unsigned short allowNotLettersChars, unsigned maxEntryLenght)
 {
     char stringInput[maxEntryLenght];
-    unsigned short invalidInput;
+    byte invalidInput;
     do
     {
         invalidInput = 0;
@@ -278,7 +278,7 @@ FgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsign
 int
 CheckLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght)
 {
-    unsigned short foundNewLineChar = 0, foundEOSChar = 0;
+    byte foundNewLineChar = 0, foundEOSChar = 0;
     short int lastValidCharPosition = -1; /* So if the first char is \n, the "stringVar [lastValidCharPosition + 1] = EOS;" will still work. */
     unsigned counter;
     

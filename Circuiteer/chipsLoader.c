@@ -9,15 +9,14 @@
 #define COMMENTARY_START                    '#'
 
 /* Will load the chips into the given array */
-unsigned short
+byte
 LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES])
 {
-    unsigned short counterChipModels [NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS];
+    byte counterChipModels [NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS];
     ChipType auxChipVar;
     char *stringValidation;
     char textLineString [MAX_CHIP_DESCRIPTION_SIZE];
     int short controlString = 0;
-    unsigned charCounter;
     FILE *pFile;
     
 
@@ -28,7 +27,6 @@ LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
     while (fgets (textLineString, MAX_ENTRY_LENGHT, pFile)) /* Read the lines until fgets returns NULL, aka EOF */
     {
         CheckLenghtRemoveEndSpacesNewLineToEOS (textLineString, MAX_ENTRY_LENGHT); /* String treatment */
-        charCounter = strlen (textLineString);
         
         /*printf ("RAW: %s, control = %i\n", textLineString, controlString);*/
         if (controlString == 0) /* Check if the line is a commentary or empty line */

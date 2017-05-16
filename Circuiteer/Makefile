@@ -17,9 +17,9 @@ all: $(EXECS)
 
 .c.o:
 	$(CC) $(CFLAGS) $<
-	
+    
 Circuiteer: $(CIRCUITEEROBJS)
 	$(LD) $(LFLAGS) $@ $(CIRCUITEEROBJS)
-	
+    
 clean:
 	rm -f *.o $(EXECS)
