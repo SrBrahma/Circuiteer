@@ -10,7 +10,7 @@
 #include <string.h>
 #include "Circuiteer.h"
 
-#define EXPRESSION_DEFAULT_CHARS            " ()'¬+*\0"
+#define EXPRESSION_DEFAULT_CHARS            " ()'+*01\0"
 #define INVALID_LAST_CHARS_FOR_AFTER_NOT    " (+*"          /* For ' not char. This can't happen +' */
 
 
@@ -121,7 +121,7 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
             {
                 if (counter == 0)
                 {
-                    printf ("\nError 504: Invalid negation (\') on position %u of the string.\n", counter);
+                    printf ("\nError 504a: Invalid negation (\') on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
                 else
@@ -130,7 +130,7 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                     {
                         if (rawExpression[counter-1] == INVALID_LAST_CHARS_FOR_AFTER_NOT[counter2])
                         {
-                            printf ("\nError 505: Invalid negation (\') on position %u of the string.\n", counter);
+                            printf ("\nError 504b: Invalid negation (\') on position %u of the string.\n", counter);
                             invalidInput = 1;
                         }
                     }
@@ -151,19 +151,19 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                 /* To avoid stuff like A (B +) */
                 if (foundOperator == 1)
                 {
-                    printf("\nError 506: Invalid parenthesis \")\" on position %u of the string.\n", counter);
+                    printf("\nError 505a: Invalid parenthesis \")\" on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
                 
                 else if (numberCloseParenthesis > numberOpenParenthesis)
                 {
-                    printf ("\nError 508: Invalid parenthesis \")\" on position %u of the string.\n", counter);
+                    printf ("\nError 505b: Invalid parenthesis \")\" on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
                 
                 else if (foundOperand == 0)
                 {
-                    printf("\nError 507: Invalid empty parenthesis \")\" on position %u of the string.\n", counter);
+                    printf("\nError 506: Invalid empty parenthesis \")\" on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
             }
@@ -172,14 +172,14 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
         /* If there are unclosed parenthesis */
         if (numberOpenParenthesis != numberCloseParenthesis && invalidInput == 0)
         {
-            printf ("\nError 509: Unclosed parenthesis found.\n");
+            printf ("\nError 507: Unclosed parenthesis found.\n");
             invalidInput = 1;
         }
         
         /* If there is a operator unused on the end */
         else if (foundOperator == 1 && invalidInput == 0)
         {
-            printf ("\nError 510: Invalid operator \"%c\" on the position %u of the string.\n", rawExpression[lastOperatorPosition], lastOperatorPosition);
+            printf ("\nError 508: Invalid operator \"%c\" on the position %u of the string.\n", rawExpression[lastOperatorPosition], lastOperatorPosition);
             invalidInput = 1;
         }
     }

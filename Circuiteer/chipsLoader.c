@@ -10,10 +10,10 @@
 
 /* Will load the chips into the given array */
 byte
-LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES])
+LoadChips (chipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES])
 {
     byte counterChipModels [NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS];
-    ChipType auxChipVar;
+    chipType auxChipVar;
     char *stringValidation;
     char textLineString [MAX_CHIP_DESCRIPTION_SIZE];
     int short controlString = 0;

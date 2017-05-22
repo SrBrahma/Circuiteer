@@ -55,6 +55,8 @@
 #define ERROR_EXCEEDS_MAX_STRING_LENGHT             -1
 /* - - - - - - - -*/
 
+typedef unsigned char byte;
+typedef enum{false, true} boolean;
 
 typedef struct
 {
@@ -64,13 +66,22 @@ typedef struct
     unsigned short inputs;
     unsigned short outputs;
     unsigned short inputsPerOutput;
-} ChipType; 
+} chipType; 
 
-typedef unsigned char byte;
+typedef struct karnaughMapCell
+{
+    byte value;
+    struct karnaughMapCell *leftPos;
+    struct karnaughMapCell *rightPos;
+    struct karnaughMapCell *upPos;
+    struct karnaughMapCell *downPos;
+} karnaughMapCell;
+
+
 
 /* - chipsLoader - */
 byte
-LoadChips (ChipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES]);
+LoadChips (chipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES]);
 
 /* - generalFunctions - */
 
@@ -84,17 +95,21 @@ FgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsign
 void
 ReadExpression (const char printfString[], char rawExpression[], char inputLetter[], unsigned short numberOfInputs, unsigned maxEntryLenght);
 
-unsigned short
-ExpressionToAgroupments (const char originalExpression[],  char newExpression[],
-                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxStringLenght);
-
-void
-ApplyKarnaugh (const char oldExpression[], char newExpression [], unsigned maxEntryLenght);
-
 int
 CheckLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLenght);
 
 char
 PrintAndReadMenu (unsigned maxEntryLenght);
+
+/* expressionSimplifier */
+unsigned short
+RawExpressionToMinterms (const char originalExpression[],  char newExpression[],
+                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxStringLenght);
+void
+ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLenght, char newExpression [], byte getNegated,
+               unsigned maxEntryLenght);
+void
+RemoveRepeatingTermInMinterm (const char originalMinterm[], char newMinterm[], boolean checkControversialTerms);
+
 
 #endif

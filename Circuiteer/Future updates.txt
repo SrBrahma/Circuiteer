@@ -1,4 +1,4 @@
 Must do:
-*) Add the final negation ( ' ) to expressions
 *) Add the initial negations (! and ¬)
-*) Expression reader mustn't accept empty input
+*) Deal with 1 and 0 (for now focus on ExpressionToAggroupments)
+*) ApplyKarnaugh function

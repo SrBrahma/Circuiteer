@@ -20,3 +20,4 @@ sprintf (auxExpression, "%.*s%.*s%s", openParenthesisBeforeClosePos, newExpressi
                                       firstCloseParenthesisPos - openParenthesisBeforeClosePos - 1, newExpression + openParenthesisBeforeClosePos + 1,
                                       pointerCloseParenthesis + 1);
 =============================
+
