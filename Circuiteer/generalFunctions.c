@@ -285,7 +285,7 @@ CheckLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLengh
     /* This "for" must be incremental, as if it was decremental it could find false-positive garbage */ 
     for (counter = 0; (counter < maxEntryLenght && foundNewLineChar == 0 && foundEOSChar == 0); counter ++)
     {
-        if (stringVar [counter] == '\n' && stringVar [counter] == '\r')
+        if (stringVar [counter] == '\n' || stringVar [counter] == '\r')
             foundNewLineChar = 1;
             
         else if (stringVar [counter] == EOS)
