@@ -117,12 +117,53 @@ KarnaughColumnPos (byte originalColumn, short int additionalColumnValue, byte ka
     return ((byte) result);
 }
 
+void
+GetAggroupments (const byte arrayKarnaugh[], const byte cellIsAggrouped[], byte karnaughWidth, byte karnaughHeight,
+        char expressionReturn[])
+{
+    byte counterRow, counterColumn;
+    byte activeToLeft, activeToRight, activeToUp, activeToDown, sidesPossibilities;
+    byte counterGetSingleOption = 0;
+    
+    while (counterGetSingleOption < 2)
+    {
+        for (counterRow = 0; counterRow < karnaughHeight; counterRow ++)
+        {
+            for (counterColumn = 0; counterColumn < karnaughWidth; counterColumn++)
+            {
+                if (arrayKarnaugh[counterRow][counterColumn] && !cellIsAggrouped[counterRow][counterColumn])
+                {
+                    sidesPossibilities = 0;
+                    
+                    for (activeToRight = 0; ((activeToRight < karnaughWidth) && 
+                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToRight + 1, karnaughWidth)]); activeToRight ++);
+                    for (activeToLeft = 0; ((activeToLeft < karnaughWidth) && 
+                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToLeft - 1, karnaughWidth)]); activeToLeft ++);
+                    for (activeToUp = 0; ((activeToUp < karnaughHeight) && 
+                    (arrayKarnaugh[counterRow][counterColumn]); activeToUp ++);
+                    for (activeToDown = 0; ((activeToDown < karnaughHeight) && 
+                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToRight + 1, karnaughWidth)]); activeToDown ++);
+                    
+                    if (activeToRight)
+                        sidesPossibilities ++;
+                    if (activeToLeft)
+                        sidesPossibilities ++;
+                    if (activeToUp)
+                        sidesPossibilities ++;
+                    if (activeToDown)
+                        sidesPossibilities ++;
+                    if (counterGetSingleOption == 0)
+                    {
+                        if (sidesPossibilities == 0)
+                    }
+                    else
+}
 
 void
 ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLenght, char newExpression [], byte getNegated, unsigned maxEntryLenght)
 {
     /* NOTE: Will only accept minterms not negated and without parentheses ( (A+B)' are not accepted now) */
-    /* Will simplify AA to A, AA' to 0, A+A' to 1. */
+    /* Don't enter with AAB (redundant inputs), use the RemoveRepeatingTermInMinterm before. */
     
     byte numberOfInputs = 0;
     char inputLetter[MAX_INPUTS];
@@ -135,13 +176,15 @@ ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLen
     char thisMintermExpression[maxEntryLenght];
     
     byte karnaughWidth, karnaughHeight;
-    karnaughMapCell *karnaughZeroZeroPosition;
     byte arrayKarnaugh[4][4] = {0};
+    byte cellIsAggrouped[4][4] = {0};
     
     short int rowCounter, columnCounter;
     
-    byte karnaughOnValue = 1;
-    byte karnaughOffValue = 0;
+    byte karnaughOnValue = 1; /* May be changed to get the negated expression */
+    
+    /* Empty the newExpression string */
+    strcpy (newExpression, "");
     
     /* Check the entire expression inputs */
     /* First get the number of inputs and its corresponding letters */
@@ -170,35 +213,49 @@ ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLen
         }
     }
     
-    /* Check the minterm */
+    /* Set the Karnaugh Map size/bounds */
     if (numberOfInputs == 1)
     {
-        karnaughWidth = 2;
-        karnaughHeight = 1;
+        karnaughWidth = 1;
+        karnaughHeight = 2;
     }
     if (numberOfInputs == 2)
-    {
         karnaughWidth = karnaughHeight = 2;
-    }
     if (numberOfInputs == 3)
     {
         karnaughWidth = 2;
         karnaughHeight = 4;
     }
     if (numberOfInputs == 4)
-    {
         karnaughWidth = karnaughHeight = 4;
-    }
     
     /* Put the expression into the map */
     for (counter = 0; sourceExpression[counter] != EOS; counter++)
     {
-        
-    
-    /* DO THE KARNAUGH */
-    /* Test if all cells are ON, if yes, expression output will be 1.*/
     }
     
+/* DO THE KARNAUGH */
+    
+    /* Look if all cells are ON, if yes, expression output will be 1.*/
+    for (counter = 0; counter < (karnaughWidth*karnaughHeight) && arrayKarnaugh[0][counter] == karnaughOnValue; counter ++);
+    if (counter == karnaughWidth*karnaughHeight)
+    {
+        strcpy (newExpression, "1");
+        return;
+    }
+    
+/* Look for the only option/alone cells */
+    
+    /* Look for 8-sized retangles */
+    if (karnaughWidth == 4 && karnaughWidth > 1)
+        for (counter = 0; counter < karnaughHeight; counter ++)
+            
+    /* Look for 4-sized retangles */
+    /* Look for 4-sized lines */
+    if (karnaughWidth == 4)
+        for (counter = 0; counter < karnaughHeight; counter ++)
+            
+    /* Look for 2-sized lines, if doesn't exists, aggroup the single cell */
     for (rowCounter = 0; rowCounter < karnaughHeight; rowCounter ++)
     {
         for (columnCounter = 0; columnCounter < karnaughWidth; columnCounter ++)
@@ -273,7 +330,7 @@ RemoveRepeatingTermInMinterm (const char originalMinterm[], char newMinterm[], b
             for (counter2 = 0; counter2 < strlen (termsString); counter2++)
                 if (strchr (negatedTermsString, termsString[counter2]))
                 {
-                    sprintf (newMinterm, "0");
+                    strcpy (newMinterm, "0");
                     return;
                 }
         counter ++;

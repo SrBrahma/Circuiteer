@@ -77,7 +77,17 @@ typedef struct karnaughMapCell
     struct karnaughMapCell *downPos;
 } karnaughMapCell;
 
+typedef struct
+{
+    byte value;
+    
+} karnaughMapCell;
 
+typedef struct
+{
+    byte cellXPos;
+    byte cellYPos;
+} cellPosition;
 
 /* - chipsLoader - */
 byte
