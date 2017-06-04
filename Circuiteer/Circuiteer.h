@@ -68,21 +68,6 @@ typedef struct
     unsigned short inputsPerOutput;
 } chipType; 
 
-typedef struct karnaughMapCell
-{
-    byte value;
-    struct karnaughMapCell *leftPos;
-    struct karnaughMapCell *rightPos;
-    struct karnaughMapCell *upPos;
-    struct karnaughMapCell *downPos;
-} karnaughMapCell;
-
-typedef struct
-{
-    byte value;
-    
-} karnaughMapCell;
-
 typedef struct
 {
     byte cellXPos;

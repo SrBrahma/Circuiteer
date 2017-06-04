@@ -118,14 +118,84 @@ KarnaughColumnPos (byte originalColumn, short int additionalColumnValue, byte ka
 }
 
 void
-GetAggroupments (const byte arrayKarnaugh[], const byte cellIsAggrouped[], byte karnaughWidth, byte karnaughHeight,
-        char expressionReturn[])
+KarnaughTwoInputsToExpression (byte position, char letter1, char letter2, char expressionReturn[])
 {
+    if (position == 0)
+    {
+        sprintf (expressionReturn, "%c'%c'+", letter1, letter2);
+        return;
+    }
+    if (position == 1)
+    {
+        sprintf (expressionReturn, "%c'%c+", letter1, letter2);
+        return;
+    }
+    if (position == 2)
+    {
+        sprintf (expressionReturn, "%c%c+", letter1, letter2);
+        return;
+    }
+    /* implicit: if (position == 3) */
+    sprintf (expressionReturn, "%c%c'+", letter1, letter2);
+    return;
+}
+
+void
+KarnaughOneInputToExpression (byte position, boolean goingDownOrRight, char letter1, char letter2, char expressionReturn[])
+{
+    if (goingDownOrRight)
+    {
+        if (position == 0)
+        {
+            sprintf (expressionReturn, "%c'+", letter1);
+            return;
+        }
+        else if (position == 1)
+        {
+            sprintf (expressionReturn, "%c+", letter2);
+            return;
+        }
+        else if (position == 2)
+        {
+            sprintf (expressionReturn, "%c+", letter1);
+            return;
+        /* implicit: if (position == 3) */
+        sprintf (expressionReturn, "%c'+", letter2);
+        return;
+    }
+    else /* If going Up or Left */
+    {
+        if (position == 0)
+        {
+            sprintf (expressionReturn, "%c'+", letter2);
+            return;
+        }
+        else if (position == 1)
+        {
+            sprintf (expressionReturn, "%c'+", letter1);
+            return;
+        }
+        else if (position == 2)
+        {
+            sprintf (expressionReturn, "%c+", letter2);
+            return;
+        }
+        /* implicit: if (position == 3) */
+        sprintf (expressionReturn, "%c+", letter1);
+        return;
+    }
+}
+
+void
+GetAggroupments (const byte arrayKarnaugh[][4], byte karnaughWidth, byte karnaughHeight,
+        const char inputLetter[], char expressionReturn[])
+{
+    byte cellIsAggrouped[karnaughHeight][karnaughWidth];
     byte counterRow, counterColumn;
     byte activeToLeft, activeToRight, activeToUp, activeToDown, sidesPossibilities;
-    byte counterGetSingleOption = 0;
+    int getSingleOption;
     
-    while (counterGetSingleOption < 2)
+    for (getSingleOption = 1; getSingleOption > 0; getSingleOption ++)
     {
         for (counterRow = 0; counterRow < karnaughHeight; counterRow ++)
         {
@@ -136,13 +206,13 @@ GetAggroupments (const byte arrayKarnaugh[], const byte cellIsAggrouped[], byte 
                     sidesPossibilities = 0;
                     
                     for (activeToRight = 0; ((activeToRight < karnaughWidth) && 
-                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToRight + 1, karnaughWidth)]); activeToRight ++);
+                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToRight + 1, karnaughWidth)])); activeToRight ++);
                     for (activeToLeft = 0; ((activeToLeft < karnaughWidth) && 
-                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToLeft - 1, karnaughWidth)]); activeToLeft ++);
+                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToLeft - 1, karnaughWidth)])); activeToLeft ++);
                     for (activeToUp = 0; ((activeToUp < karnaughHeight) && 
-                    (arrayKarnaugh[counterRow][counterColumn]); activeToUp ++);
+                    (arrayKarnaugh[counterRow][counterColumn])); activeToUp ++);
                     for (activeToDown = 0; ((activeToDown < karnaughHeight) && 
-                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToRight + 1, karnaughWidth)]); activeToDown ++);
+                    (arrayKarnaugh[counterRow][KarnaughColumnPos (counterColumn, activeToRight + 1, karnaughWidth)])); activeToDown ++);
                     
                     if (activeToRight)
                         sidesPossibilities ++;
@@ -152,11 +222,45 @@ GetAggroupments (const byte arrayKarnaugh[], const byte cellIsAggrouped[], byte 
                         sidesPossibilities ++;
                     if (activeToDown)
                         sidesPossibilities ++;
-                    if (counterGetSingleOption == 0)
+                        
+                    if (getSingleOption == 0)
                     {
-                        if (sidesPossibilities == 0)
-                    }
-                    else
+                        if (sidesPossibilities == 0) /* For alone cells */
+                        {
+                            KarnaughTwoInputsToExpression (counterRow, inputLetter[0], inputLetter[1], expressionReturn);
+                            KarnaughTwoInputsToExpression (counterColumn, inputLetter[2], inputLetter[3], expressionReturn);
+                        }
+                        
+                        else if (sidesPossibilities == 1) /* For alone cells */
+                        {
+                            if (activeToUp)
+                            {
+                                KarnaughOneInputToExpression (counterRow, false, inputLetter[0], inputLetter[1], expressionReturn);
+                                KarnaughTwoInputsToExpression (counterColumn, inputLetter[2], inputLetter[3], expressionReturn);
+                            }
+                            else if (activeToDown)
+                            {
+                                KarnaughOneInputToExpression (counterRow, true, inputLetter[0], inputLetter[1], expressionReturn);
+                                KarnaughTwoInputsToExpression (counterColumn, inputLetter[2], inputLetter[3], expressionReturn);
+                            }
+                            else if (activeToLeft)
+                            {
+                                KarnaughTwoInputsToExpression (counterRow, inputLetter[0], inputLetter[1], expressionReturn);
+                                KarnaughOneInputToExpression (counterColumn, false, inputLetter[2], inputLetter[3], expressionReturn);
+                            }
+                            else if (activeToRight)
+                            {
+                                KarnaughTwoInputsToExpression (counterRow, inputLetter[0], inputLetter[1], expressionReturn);
+                                KarnaughOneInputToExpression (counterColumn, true, inputLetter[2], inputLetter[3], expressionReturn);
+                            }
+                        } /* End of only 1 possibility */
+                    } /* End of get only 1 or 0 possibilities */
+                } /* End of if (cell is 1 and is not aggrouped yet) */
+            } /* End of counterColumn for */
+        } /*End of counterRow for */
+    
+    } /* End of getSingleOption for */ 
+    return;
 }
 
 void
@@ -181,8 +285,13 @@ ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLen
     
     short int rowCounter, columnCounter;
     
-    byte karnaughOnValue = 1; /* May be changed to get the negated expression */
+    byte karnaughOnValue; /* May be changed to get the negated expression */
     
+    if (getNegated)
+        karnaughOnValue = 0;
+    else
+        karnaughOnValue = 1;
+
     /* Empty the newExpression string */
     strcpy (newExpression, "");
     
@@ -236,51 +345,7 @@ ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLen
     
 /* DO THE KARNAUGH */
     
-    /* Look if all cells are ON, if yes, expression output will be 1.*/
-    for (counter = 0; counter < (karnaughWidth*karnaughHeight) && arrayKarnaugh[0][counter] == karnaughOnValue; counter ++);
-    if (counter == karnaughWidth*karnaughHeight)
-    {
-        strcpy (newExpression, "1");
-        return;
-    }
     
-/* Look for the only option/alone cells */
-    
-    /* Look for 8-sized retangles */
-    if (karnaughWidth == 4 && karnaughWidth > 1)
-        for (counter = 0; counter < karnaughHeight; counter ++)
-            
-    /* Look for 4-sized retangles */
-    /* Look for 4-sized lines */
-    if (karnaughWidth == 4)
-        for (counter = 0; counter < karnaughHeight; counter ++)
-            
-    /* Look for 2-sized lines, if doesn't exists, aggroup the single cell */
-    for (rowCounter = 0; rowCounter < karnaughHeight; rowCounter ++)
-    {
-        for (columnCounter = 0; columnCounter < karnaughWidth; columnCounter ++)
-        {
-            if (arrayKarnaugh[rowCounter][columnCounter] == karnaughOffValue)
-            {
-                /* If the cell of the right have OnValue */
-                if (arrayKarnaugh[rowCounter][KarnaughColumnPos (columnCounter, 1, karnaughWidth)] == karnaughOnValue)
-                {
-                }
-                /* If the cell of the top have OnValue */
-                if (arrayKarnaugh[KarnaughRowPos (rowCounter, -1, karnaughHeight)][columnCounter] == karnaughOnValue)
-                {
-                }
-                /* If the cell of the left have OnValue */
-                if (arrayKarnaugh[rowCounter][KarnaughColumnPos (columnCounter, -1, karnaughWidth)] == karnaughOnValue)
-                {
-                }
-                /* If the cell of the bottom have OnValue */
-                if (arrayKarnaugh[KarnaughRowPos (rowCounter, 1, karnaughHeight)][columnCounter] == karnaughOnValue)
-                {
-                }
-            }
-        }
-    }
     
     /*DEBUG*/
     printf ("Number of differents inputs = %u; ", numberOfInputs);
