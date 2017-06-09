@@ -97,9 +97,10 @@ char
 PrintAndReadMenu (unsigned maxEntryLenght);
 
 /* expressionSimplifier */
+
 unsigned short
-RawExpressionToMinterms (const char originalExpression[],  char newExpression[],
-                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxStringLenght);
+RawExpressionToMinterms (const char oldExpression[],  char newExpression[], 
+                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxExpressionLenght);
 void
 ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLenght, char newExpression [], byte getNegated,
                unsigned maxEntryLenght);

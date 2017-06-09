@@ -3,8 +3,7 @@
 #include "Circuiteer.h"
 
 unsigned short
-RawExpressionToMinterms (const char oldExpression[],  char newExpression[],
-                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxExpressionLenght)
+RawExpressionToMinterms (const char oldExpression[],  char newExpression[], char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxExpressionLenght)
 {
     char auxExpression[maxExpressionLenght];
     unsigned short numberAgroupments = 0;
@@ -117,6 +116,7 @@ KarnaughColumnPos (byte originalColumn, short int additionalColumnValue, byte ka
     return ((byte) result);
 }
 
+
 void
 KarnaughTwoInputsToExpression (byte position, char letter1, char letter2, char expressionReturn[])
 {
@@ -150,50 +150,49 @@ KarnaughOneInputToExpression (byte position, boolean goingDownOrRight, char lett
             sprintf (expressionReturn, "%c'+", letter1);
             return;
         }
-        else if (position == 1)
+        if (position == 1)
         {
             sprintf (expressionReturn, "%c+", letter2);
             return;
         }
-        else if (position == 2)
+        if (position == 2)
         {
             sprintf (expressionReturn, "%c+", letter1);
             return;
+        }
         /* implicit: if (position == 3) */
         sprintf (expressionReturn, "%c'+", letter2);
         return;
     }
-    else /* If going Up or Left */
+    /* Implicit Else; is going Up dor Left. */
+    if (position == 0)
     {
-        if (position == 0)
-        {
-            sprintf (expressionReturn, "%c'+", letter2);
-            return;
-        }
-        else if (position == 1)
-        {
-            sprintf (expressionReturn, "%c'+", letter1);
-            return;
-        }
-        else if (position == 2)
-        {
-            sprintf (expressionReturn, "%c+", letter2);
-            return;
-        }
-        /* implicit: if (position == 3) */
-        sprintf (expressionReturn, "%c+", letter1);
+        sprintf (expressionReturn, "%c'+", letter2);
         return;
     }
+    if (position == 1)
+    {
+        sprintf (expressionReturn, "%c'+", letter1);
+        return;
+    }
+    if (position == 2)
+    {
+        sprintf (expressionReturn, "%c+", letter2);
+        return;
+    }
+    /* implicit: if (position == 3) */
+    sprintf (expressionReturn, "%c+", letter1);
+    return;
 }
-
 void
-GetAggroupments (const byte arrayKarnaugh[][4], byte karnaughWidth, byte karnaughHeight,
-        const char inputLetter[], char expressionReturn[])
+GetAggroupments (const byte arrayKarnaugh[4][4], byte karnaughOnValue, byte karnaughWidth, byte karnaughHeight,
+                 const char inputLetter[], char expressionReturn[])
 {
-    byte cellIsAggrouped[karnaughHeight][karnaughWidth];
+    byte cellIsAggrouped[4][4] = {0};
     byte counterRow, counterColumn;
     byte activeToLeft, activeToRight, activeToUp, activeToDown, sidesPossibilities;
-    int getSingleOption;
+    short int getSingleOption;
+    
     
     for (getSingleOption = 1; getSingleOption > 0; getSingleOption ++)
     {
@@ -223,12 +222,14 @@ GetAggroupments (const byte arrayKarnaugh[][4], byte karnaughWidth, byte karnaug
                     if (activeToDown)
                         sidesPossibilities ++;
                         
-                    if (getSingleOption == 0)
+                    if (getSingleOption == 1)
                     {
                         if (sidesPossibilities == 0) /* For alone cells */
                         {
                             KarnaughTwoInputsToExpression (counterRow, inputLetter[0], inputLetter[1], expressionReturn);
                             KarnaughTwoInputsToExpression (counterColumn, inputLetter[2], inputLetter[3], expressionReturn);
+                            cellIsAggrouped[counterRow][counterColumn] = 1;
+                            
                         }
                         
                         else if (sidesPossibilities == 1) /* For alone cells */
@@ -264,7 +265,8 @@ GetAggroupments (const byte arrayKarnaugh[][4], byte karnaughWidth, byte karnaug
 }
 
 void
-ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLenght, char newExpression [], byte getNegated, unsigned maxEntryLenght)
+ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLenght, char newExpression [], byte getNegated,
+               unsigned maxEntryLenght)
 {
     /* NOTE: Will only accept minterms not negated and without parentheses ( (A+B)' are not accepted now) */
     /* Don't enter with AAB (redundant inputs), use the RemoveRepeatingTermInMinterm before. */
@@ -281,9 +283,6 @@ ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLen
     
     byte karnaughWidth, karnaughHeight;
     byte arrayKarnaugh[4][4] = {0};
-    byte cellIsAggrouped[4][4] = {0};
-    
-    short int rowCounter, columnCounter;
     
     byte karnaughOnValue; /* May be changed to get the negated expression */
     
@@ -345,16 +344,14 @@ ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLen
     
 /* DO THE KARNAUGH */
     
-    
-    
     /*DEBUG*/
+    /*
     printf ("Number of differents inputs = %u; ", numberOfInputs);
     for (counter = 0; counter < numberOfInputs; counter ++)
         printf ("%c", inputLetter[counter]);
-    printf("\n");
-    
+    printf("\n"); */
+    return;
 }
-
 
 
 /* This function will transform "AAABB'B'CCD" into ABB'CD. 
@@ -405,3 +402,4 @@ RemoveRepeatingTermInMinterm (const char originalMinterm[], char newMinterm[], b
     sprintf (newMinterm, "%s%s", termsString, negatedTermsString);
     return;
 }
+

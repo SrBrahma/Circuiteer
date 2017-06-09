@@ -79,7 +79,7 @@ main (int argc, char *argv[])
                 {
                     sprintf (auxString, "IN DEBUG: Inputs are = A, B, C, D. Enter the expression\nX = ");
                     ReadExpression (auxString, rawExpression, "ABCD", 4, MAX_ENTRY_LENGHT);
-                    ApplyKarnaugh (rawExpression, strlen (rawExpression), auxString, 1, MAX_EXPRESSION_LENGHT);
+                    /* ApplyKarnaugh (rawExpression, strlen (rawExpression), auxString, 1, MAX_EXPRESSION_LENGHT); */
                     printf ("NEW EXPRESSION AFTER REMOVE IS = %s\n", auxString);
                     /*
                     RemoveRepeatingTermInMinterm (rawExpression, auxString, true);
