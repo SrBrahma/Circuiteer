@@ -12,22 +12,22 @@
 byte
 LoadChips (chipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS][MAX_NUMBER_CHIPS_PER_GATES])
 {
-    byte counterChipModels [NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS];
+    /*byte counterChipModels [NUMBER_OF_GATES_KINDS][MAX_NUMBER_OF_INPUTS_PER_OUTPUT][MAX_NUMBER_OF_OUTPUTS];*/
     chipType auxChipVar;
     char *stringValidation;
     char textLineString [MAX_CHIP_DESCRIPTION_SIZE];
     int short controlString = 0;
     FILE *pFile;
-    
+
 
     pFile = fopen ("./ChipsFamilies/TTL_Chips.txt" , "r");
-    
+
     if (pFile == NULL) return ERROR_OPENING_FILE;
-    
+
     while (fgets (textLineString, MAX_ENTRY_LENGHT, pFile)) /* Read the lines until fgets returns NULL, aka EOF */
     {
         CheckLenghtRemoveEndSpacesNewLineToEOS (textLineString, MAX_ENTRY_LENGHT); /* String treatment */
-        
+
         /*printf ("RAW: %s, control = %i\n", textLineString, controlString);*/
         if (controlString == 0) /* Check if the line is a commentary or empty line */
         {
@@ -41,32 +41,32 @@ LoadChips (chipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
                 controlString = 1;
             }
         }
-        
+
         if (controlString == 1) /* Chip Name */
         {
             strcpy (auxChipVar.name, textLineString);
         }
-        
+
         else if (controlString == 2) /* Chip Description */
         {
             strcpy (auxChipVar.description, textLineString);
         }
-        
+
         else if (controlString == 3) /* Chip kind */
         {
             auxChipVar.gateKind = (unsigned short) strtoul (textLineString, &stringValidation, 10);
         }
-        
+
         else if (controlString == 4) /* Chip number of inputs */
         {
             auxChipVar.inputs = (unsigned short) strtoul (textLineString, &stringValidation, 10);
         }
-        
+
         else if (controlString == 5) /* Chip number of outputs */
         {
             auxChipVar.outputs = (unsigned short) strtoul (textLineString, &stringValidation, 10);
         }
-        
+
         else if (controlString == 6) /* Chip ratio of inputs per output */
         {
             auxChipVar.inputsPerOutput = (unsigned short) strtoul (textLineString, &stringValidation, 10);
@@ -79,19 +79,17 @@ LoadChips (chipType chipsArrayToReturnToProgram[NUMBER_OF_GATES_KINDS][MAX_NUMBE
             printf ("Outputs: %u\n", auxChipVar.outputs);
             printf ("InputsPerOutputs: %u\n\n", auxChipVar.inputsPerOutput);
             */
-            
+
         }
-        
+
         if (controlString > 2 && *stringValidation != EOS)
         {
             printf ("Error at stringValidation =: (%c)\n", *stringValidation);
             return ERROR_STR_TO_UL;
         }
-         
+
         controlString += 1;
     }                                   /* END OF WHILE LOOP */
     fclose (pFile);
     return OK;
 }
-
-

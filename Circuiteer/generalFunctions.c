@@ -21,52 +21,52 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
 {
         /* Text Input */
     unsigned short rawExpressionLenght;
-    
+
         /* Valid Chars */
     unsigned short validCharsLenght = strlen (EXPRESSION_DEFAULT_CHARS) + numberOfInputs; /* This var is used later */
     char validChars [validCharsLenght];
-    
+
         /* Error treatment */
     unsigned short counter, counter2;
     unsigned short lastOperatorPosition;
     byte foundOperand, foundOperator;
     unsigned short numberOpenParenthesis, numberCloseParenthesis;
-    
+
         /* Errors */
     byte foundInvalidChar;
     byte invalidInput;
     /* - - - END OF VARS ASSIGNMENT - - - */
-    
-    
-    
+
+
+
     /* Load the valid chars variable */
     strcpy (validChars, EXPRESSION_DEFAULT_CHARS);
     strcat (validChars, inputLetter);
-    
+
     /* Main Loop to get the expression*/
     do
     {
         numberOpenParenthesis = numberCloseParenthesis = 0;
         foundOperand = foundOperator = 0;
         invalidInput = 0;
-        
+
         printf ("%s", printfString);
-        
+
         fgets (rawExpression, maxEntryLenght, stdin);
         rawExpressionLenght = CheckLenghtRemoveEndSpacesNewLineToEOS (rawExpression, maxEntryLenght);
         if (rawExpressionLenght == -1)
         {
             printf ("\nError 500: The input exceeds the maximum lenght allowed (%u).\n", maxEntryLenght);
             invalidInput = 1;
-        }       
-        
-        
+        }
+
+
         if (rawExpressionLenght == 0)
         {
             printf ("\nError 501: The input must contain at least one char.\n");
             invalidInput = 1;
         }
-        
+
     /* First look for garbage (chars that are not allowed) */
         for (counter = 0; (counter < rawExpressionLenght && invalidInput == 0); counter ++)
         {
@@ -82,7 +82,7 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                 invalidInput = 1;
             }
         }
-        
+
     /* Now look for invalid parenthesis and invalid operators*/
         for (counter = 0; (counter < rawExpressionLenght && invalidInput == 0); counter ++)
         {
@@ -94,12 +94,12 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                     /* If finds an operand and a previous operand and a operator exists, set foundOperator 0. Ex: A + ___, B */
                     if (foundOperand == 1 && foundOperator == 1)
                         foundOperator = 0;
-                        
+
                     /* Found the operand. */
                     foundOperand = 1;
                 }
             }
-            
+
             /* Look for operators */
             if (rawExpression[counter] == '+' || rawExpression[counter] == '*')
             {
@@ -115,7 +115,7 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                     lastOperatorPosition = counter;
                 }
             }
-            
+
             /* Look for invalid NOT ', ex: ', (', +' */
             else if (rawExpression[counter] == '\'')
             {
@@ -136,7 +136,7 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                     }
                 }
             }
-            
+
             /* Look for parenthesis */
             else if (rawExpression[counter] == '(')
             {
@@ -147,20 +147,20 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
             else if (rawExpression[counter] == ')')
             {
                 numberCloseParenthesis ++;
-                
+
                 /* To avoid stuff like A (B +) */
                 if (foundOperator == 1)
                 {
                     printf("\nError 505a: Invalid parenthesis \")\" on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
-                
+
                 else if (numberCloseParenthesis > numberOpenParenthesis)
                 {
                     printf ("\nError 505b: Invalid parenthesis \")\" on position %u of the string.\n", counter);
                     invalidInput = 1;
                 }
-                
+
                 else if (foundOperand == 0)
                 {
                     printf("\nError 506: Invalid empty parenthesis \")\" on position %u of the string.\n", counter);
@@ -168,14 +168,14 @@ ReadExpression (const char printfString[], char rawExpression[], char inputLette
                 }
             }
         } /* End of "FOR LOOP" - parenthesis and operators */
-        
+
         /* If there are unclosed parenthesis */
         if (numberOpenParenthesis != numberCloseParenthesis && invalidInput == 0)
         {
             printf ("\nError 507: Unclosed parenthesis found.\n");
             invalidInput = 1;
         }
-        
+
         /* If there is a operator unused on the end */
         else if (foundOperator == 1 && invalidInput == 0)
         {
@@ -196,17 +196,17 @@ FgetsChar (char printfString[], unsigned short allowNotLettersChars, unsigned ma
     {
         invalidInput = 0;
         printf ("%s", printfString);
-        
+
         fgets (stringInput, maxEntryLenght, stdin);
         if (CheckLenghtRemoveEndSpacesNewLineToEOS (stringInput, maxEntryLenght) == -1)
         {
             printf ("\nThe input exceeds the maximum lenght allowed (%u)\n", maxEntryLenght);
             invalidInput = 1;
-        }       
+        }
         else if (stringInput[0] == EOS)
         {
             printf ("\nThe input must contain a char.\n");
-            invalidInput = 1;   
+            invalidInput = 1;
         }
         else if (stringInput[1] != EOS)
         {
@@ -238,7 +238,7 @@ FgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsign
     {
         invalidInput = 0;
         printf ("%s", printfString);
-        
+
         fgets (stringInput, maxEntryLenght, stdin);
         if (CheckLenghtRemoveEndSpacesNewLineToEOS (stringInput, maxEntryLenght) == -1)
         {
@@ -248,7 +248,7 @@ FgetsUnsigned (char printfString[], unsigned minValue, unsigned maxValue, unsign
         else if (stringInput[0] == EOS)
         {
             printf ("\nThe input must contain a number.\n");
-            invalidInput = 1;   
+            invalidInput = 1;
         }
         else
         {
@@ -281,27 +281,26 @@ CheckLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLengh
     byte foundNewLineChar = 0, foundEOSChar = 0;
     short int lastValidCharPosition = -1; /* So if the first char is \n, the "stringVar [lastValidCharPosition + 1] = EOS;" will still work. */
     unsigned counter;
-    
-    /* This "for" must be incremental, as if it was decremental it could find false-positive garbage */ 
+
+    /* This "for" must be incremental, as if it was decremental it could find false-positive garbage */
     for (counter = 0; (counter < maxEntryLenght && foundNewLineChar == 0 && foundEOSChar == 0); counter ++)
     {
         if (stringVar [counter] == '\n' || stringVar [counter] == '\r')
             foundNewLineChar = 1;
-            
+
         else if (stringVar [counter] == EOS)
-            foundEOSChar = 1;   
-            
+            foundEOSChar = 1;
+
         else if (stringVar [counter] != ' ')
             lastValidCharPosition = counter;
     }
-    
+
     /* If no newLine char found, the user filled the entire string buffer, so, return ERROR */
     if (foundNewLineChar == 0 && foundEOSChar == 0)
         return ERROR_EXCEEDS_MAX_STRING_LENGHT;
-    
+
     /* Remove the useless spaces at the end of the string */
     stringVar [lastValidCharPosition + 1] = EOS;
-        
+
     return (lastValidCharPosition + 1);
 }
-    

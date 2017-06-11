@@ -2,6 +2,10 @@
 #ifndef _CIRCUITEER_
 #define _CIRCUITEER_
 
+#ifndef VERSION
+#define VERSION "Version not properly defined."
+#endif
+
 /* Gates and their correspondent value */
 #define AND_INDEX                       0
 #define OR_INDEX                        1
@@ -55,8 +59,11 @@
 #define ERROR_EXCEEDS_MAX_STRING_LENGHT             -1
 /* - - - - - - - -*/
 
+#define false           0
+#define true            1
+
 typedef unsigned char byte;
-typedef enum{false, true} boolean;
+typedef unsigned char boolean;
 
 typedef struct
 {
@@ -66,7 +73,7 @@ typedef struct
     unsigned short inputs;
     unsigned short outputs;
     unsigned short inputsPerOutput;
-} chipType; 
+} chipType;
 
 typedef struct
 {
@@ -95,17 +102,6 @@ CheckLenghtRemoveEndSpacesNewLineToEOS (char stringVar[], unsigned maxEntryLengh
 
 char
 PrintAndReadMenu (unsigned maxEntryLenght);
-
-/* expressionSimplifier */
-
-unsigned short
-RawExpressionToMinterms (const char oldExpression[],  char newExpression[], 
-                         char agroupmentsReturn[MAX_AGROUPMENTS][MAX_AGROUPMENT_LENGHT], unsigned maxExpressionLenght);
-void
-ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLenght, char newExpression [], byte getNegated,
-               unsigned maxEntryLenght);
-void
-RemoveRepeatingTermInMinterm (const char originalMinterm[], char newMinterm[], boolean checkControversialTerms);
 
 
 #endif
