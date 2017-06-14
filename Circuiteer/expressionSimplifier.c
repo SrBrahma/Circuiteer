@@ -89,16 +89,7 @@ RawExpressionToMinterms (const char oldExpression[],  char newExpression[], char
 }
 
 
-byte
-ArrayPositionTranslator (short int position, byte dimensionLenght)
-{
-    while (position < 0)
-        position += dimensionLenght;
-    while (position >= dimensionLenght)
-        position -= dimensionLenght;
 
-    return ((byte) position);
-}
 
 
 void
@@ -324,9 +315,7 @@ ApplyKarnaugh (const char sourceExpression[], unsigned short sourceExpressionLen
         karnaughWidth = karnaughHeight = 4;
 
     /* Put the expression into the map */
-    for (counter = 0; sourceExpression[counter] != EOS; counter++)
-    {
-    }
+
 
 /* DO THE KARNAUGH */
 
@@ -435,4 +424,80 @@ RemoveRepeatingTermInMinterm (const char originalMinterm[], char newMinterm[], b
 
     sprintf (newMinterm, "%s%s", termsString, negatedTermsString);
     return;
+}
+
+
+/* Will not accept "0" or "1". Treat them before. */
+void
+PutExpressionIntoMap(char *expression, const char *inputLetter, byte karnaughMap[4][4])
+{
+    byte counter, counter2;
+    unsigned short expressionLenght = strlen (expression);
+    char *beginOfMinterm;
+    char *endOfMinterm = expression - 1;  /* Includes the separator/EOS. Ex: "ABC'+". This var will point to the "+", or "A'CD\0", this var will point to \0. */
+    char *inputPos;
+    byte inputCode[] = {0, 0, 0, 0};
+
+    /* From left to right:
+     * First dimension is the first line letter, as A
+     * Second dimension is the second line letter, as B
+     * Third dimension is the start/end of the lines */
+    static byte twoInputsDecoder[3][3][2] =
+    {
+        {
+            {0, 3}, /* 0,0  */
+            {1, 2}, /* 0,B  */
+            {3, 4}  /* 0,B' */
+        },
+        {
+            {2, 3}, /* A,0  */
+            {2, 2}, /* A,B  */
+            {3, 3}  /* A,B' */
+        },
+        {
+            {0, 1}, /* A',0  */
+            {1, 1}, /* A',B  */
+            {0, 0}, /* A',B' */
+        }
+    };
+
+    do
+    {
+        beginOfMinterm = endOfMinterm + 1;
+
+        /* If '+' is not found, endOfMinterm is EOS */
+        if (!(endOfMinterm = strchr (beginOfMinterm, '+')))
+            endOfMinterm = &expression[expressionLenght];
+
+        for (counter = 0; counter < strlen (inputLetter); counter ++)
+        {
+            inputPos = strchr (beginOfMinterm, inputLetter[counter]);
+            if (!inputPos || inputPos > endOfMinterm) /* If don't find first inputLetter, ex "B" */
+                inputCode[counter] = 0;
+            else if (inputPos[1] == '\'') /* If there is the inputLetter[0], and is negated*/
+                inputCode[counter] = 2;
+            else /* If there is the inputLetter[0] and is not negated */
+                inputCode[counter] = 1;
+        }
+
+        for (counter = twoInputsDecoder[inputCode[0]][inputCode[1]][0]; counter <= twoInputsDecoder[inputCode[0]][inputCode[1]][1]; counter ++)
+        {
+            for (counter2 = twoInputsDecoder[inputCode[2]][inputCode[3]][0]; counter2 <= twoInputsDecoder[inputCode[2]][inputCode[3]][1]; counter2 ++)
+            {
+                karnaughMap[(counter == 4? 0 : counter)][(counter2 == 4? 0 : counter2)] = 1;
+            }
+        }
+    }
+    while (endOfMinterm != &expression[expressionLenght]);
+}
+
+byte
+ArrayPositionTranslator (short int position, byte dimensionLenght)
+{
+    while (position < 0)
+        position += dimensionLenght;
+    while (position >= dimensionLenght)
+        position -= dimensionLenght;
+
+    return ((byte) position);
 }

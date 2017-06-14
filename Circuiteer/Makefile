@@ -3,17 +3,19 @@
 CC = gcc
 LD = gcc
 
-CFLAGS = -Wall -ansi -c #-DVERSION=\"$(GIT_VERSION)\"
+CFLAGS = -Wall -ansi -c #-DVERSION=\"$(GIT_VERSION)\!
+
 LFLAGS = -Wall -ansi -o
 
 
 EXECS = Circuiteer
-TEST_EXECS = tests/OrdenateExpressionTerms
+TEST_EXECS = tests/OrdenateExpressionTerms tests/PutExpressionIntoMap
 
 CIRCUITEEROBJS = chipsLoader.o generalFunctions.o menu.o expressionSimplifier.o Circuiteer.o
 
 #Tests
 ORDENATE_EXPRESSION_TERMS_OBJ = expressionSimplifier.o OrdenateExpressionTerms.o
+PUT_EXPRESSION_INTO_MAP_OBJ = expressionSimplifier.o PutExpressionIntoMap.o
 
 all: $(TEST_EXECS) $(EXECS)
 
@@ -32,6 +34,11 @@ OrdenateExpressionTerms.o:
 	$(CC) $(CFLAGS) tests/OrdenateExpressionTerms.c
 tests/OrdenateExpressionTerms: $(ORDENATE_EXPRESSION_TERMS_OBJ)
 	$(LD) $(LFLAGS) $@ $(ORDENATE_EXPRESSION_TERMS_OBJ)
+
+PutExpressionIntoMap.o:
+	$(CC) $(CFLAGS) tests/PutExpressionIntoMap.c
+tests/PutExpressionIntoMap: $(PUT_EXPRESSION_INTO_MAP_OBJ)
+	$(LD) $(LFLAGS) $@ $(PUT_EXPRESSION_INTO_MAP_OBJ)
 
 clean:
 	rm -f *.o $(EXECS)
